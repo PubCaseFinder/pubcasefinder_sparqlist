@@ -2,10 +2,10 @@ version: '3'
 services:
   sparqlist:
     container_name: ${CONTAINER_NAME:-pubcasefinder-sparqlist}
-    image: dbcls/sparqlist
+    image: ${IMAGE_NAME:-dbcls/sparqlist}
     volumes:
-      - ${REPOSITORY}:/app/repository
+      - ${REPOSITORY:-./repository}:/app/repository
     ports:
-      - ${SPARQLIST_PORT}:3000
+      - ${PORT:-3000}:3000
     environment:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-sercret}
