@@ -30,7 +30,7 @@ $ cd pubcasefinder_sparqlist
 ## Configuration environment
 Create `.env` file and set values for your environment.
 ```
-$ cp templete.env .env
+$ cp template.env .env
 ```
 ### `CONTAINER_NAME`
 (default: `pubcasefinder-sparqlist`)
