@@ -88,186 +88,63 @@ WHERE {
 
 ## Output
 ```javascript
-({result})=>{ 
+({ result })=>{ 
   
-  var dic = {}
-  var rows = result.results.bindings;
-  
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].ncbi_gene_id.value in dic)
-    {
-      if (rows[i].hgnc_gene_id) { 
-        dic[rows[i].ncbi_gene_id.value].hgnc_gene_id = rows[i].hgnc_gene_id.value;
-      }
-      if (rows[i].hgnc_gene_url) { 
-        dic[rows[i].ncbi_gene_id.value].hgnc_gene_url = rows[i].hgnc_gene_url.value;
-      }
-      if (rows[i].hgnc_gene_symbol) { 
-        dic[rows[i].ncbi_gene_id.value].hgnc_gene_symbol = rows[i].hgnc_gene_symbol.value;
-      }
-      if (rows[i].full_name) { 
-        dic[rows[i].ncbi_gene_id.value].full_name = rows[i].full_name.value;
-      }
-      if (rows[i].ncbi_gene_summary) { 
-        dic[rows[i].ncbi_gene_id.value].ncbi_gene_summary = rows[i].ncbi_gene_summary.value;
-      }
-      if (rows[i].synonym) { 
-        if (dic[rows[i].ncbi_gene_id.value].inheritance_en)
-          dic[rows[i].ncbi_gene_id.value].synonym.add(rows[i].synonym.value);
-        else
-        {
-          dic[rows[i].ncbi_gene_id.value].synonym = new Set();  
-          dic[rows[i].ncbi_gene_id.value].synonym.add(rows[i].synonym.value);
-        }
-      }
-      if (rows[i].inheritance_en) { 
-        if (dic[rows[i].ncbi_gene_id.value].inheritance_en)
-          dic[rows[i].ncbi_gene_id.value].inheritance_en.add(rows[i].inheritance_en.value);
-        else
-        {
-          dic[rows[i].ncbi_gene_id.value].inheritance_en = new Set();
-          dic[rows[i].ncbi_gene_id.value].inheritance_en.add(rows[i].inheritance_en.value);
-        }
-      }
-      if (rows[i].inheritance_ja) { 
-        if (dic[rows[i].ncbi_gene_id.value].inheritance_ja)
-          dic[rows[i].ncbi_gene_id.value].inheritance_ja.add(rows[i].inheritance_ja.value);
-        else
-        {
-          dic[rows[i].ncbi_gene_id.value].inheritance_ja = new Set();
-          dic[rows[i].ncbi_gene_id.value].inheritance_ja.add(rows[i].inheritance_ja.value);
-        }
-      }
-      if (rows[i].mondo_id) { 
-        dic[rows[i].ncbi_gene_id.value].mondo_id.add(rows[i].mondo_id.value);
-      }
-      if (rows[i].mondo_url) { 
-        dic[rows[i].ncbi_gene_id.value].mondo_url.add(rows[i].mondo_url.value);
-      }
-      if (rows[i].mondo_disease_name_en) { 
-        if (dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en)
-	        dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en.add(dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en[rows[i].mondo_id.value] = rows[i].mondo_disease_name_en.value);
-        else
-        {
-          dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en = new Set();
-          dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en.add(dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en[rows[i].mondo_id.value] = rows[i].mondo_disease_name_en.value);
-        }
-      }
-      if (rows[i].mondo_disease_name_ja) { 
-        if (dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja)
-          dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja.add(dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja[rows[i].mondo_id.value] = rows[i].mondo_disease_name_ja.value);
-        else
-        {
-          dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja = new Set();
-          dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja.add(dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja[rows[i].mondo_id.value] = rows[i].mondo_disease_name_ja.value);
-        }
-      }
-      if (rows[i].disease_url) {
-        if (rows[i].disease_url.value.includes("mim"))
-        //if (rows[i].disease_url.value.match("mim"))
-        {
-          dic[rows[i].ncbi_gene_id.value].mondo_id_to_omim_id.add(
-            dic[rows[i].ncbi_gene_id.value].mondo_id_to_omim_id[rows[i].mondo_id.value] = 'OMIM:' + rows[i].disease_id.value
-          );
-        }
-        if (rows[i].disease_url.value.includes("ORDO"))
-        //if (rows[i].disease_url.value.match("ORDO"))
-        {
-          dic[rows[i].ncbi_gene_id.value].mondo_id_to_orpha_id.add(
-            dic[rows[i].ncbi_gene_id.value].mondo_id_to_orpha_id[rows[i].mondo_id.value] = 'ORPHA:' + rows[i].disease_id.value
-          );
-        }
-      }
-    }
-    else
-    {
-      dic[rows[i].ncbi_gene_id.value] = {};
-     
-      if (rows[i].hgnc_gene_id) { 
-        dic[rows[i].ncbi_gene_id.value].hgnc_gene_id = rows[i].hgnc_gene_id.value;
-      }
-      if (rows[i].hgnc_gene_url) { 
-        dic[rows[i].ncbi_gene_id.value].hgnc_gene_url = rows[i].hgnc_gene_url.value;
-      }
-      if (rows[i].hgnc_gene_symbol) { 
-        dic[rows[i].ncbi_gene_id.value].hgnc_gene_symbol = rows[i].hgnc_gene_symbol.value;
-      }
-      if (rows[i].full_name) { 
-        dic[rows[i].ncbi_gene_id.value].full_name = rows[i].full_name.value;
-      }
-      if (rows[i].ncbi_gene_summary) { 
-        dic[rows[i].ncbi_gene_id.value].ncbi_gene_summary = rows[i].ncbi_gene_summary.value;
-      }
-      if (rows[i].synonym) { 
-        dic[rows[i].ncbi_gene_id.value].synonym = new Set();  
-        dic[rows[i].ncbi_gene_id.value].synonym.add(rows[i].synonym.value);
-      }
-      if (rows[i].inheritance_en) { 
-        dic[rows[i].ncbi_gene_id.value].inheritance_en = new Set();  
-        dic[rows[i].ncbi_gene_id.value].inheritance_en.add(rows[i].inheritance_en.value);
-      }
-      if (rows[i].inheritance_ja) { 
-        dic[rows[i].ncbi_gene_id.value].inheritance_ja = new Set();  
-        dic[rows[i].ncbi_gene_id.value].inheritance_ja.add(rows[i].inheritance_ja.value);
-      }
-      if (rows[i].mondo_id) { 
-        dic[rows[i].ncbi_gene_id.value].mondo_id = new Set();
-        dic[rows[i].ncbi_gene_id.value].mondo_id.add(rows[i].mondo_id.value);
-      }
-      if (rows[i].mondo_url) { 
-        dic[rows[i].ncbi_gene_id.value].mondo_url = new Set();
-        dic[rows[i].ncbi_gene_id.value].mondo_url.add(rows[i].mondo_url.value);
-      }
-      if (rows[i].mondo_disease_name_en) { 
-        dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en = new Set();
-        dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en.add(dic[rows[i].ncbi_gene_id.value].mondo_disease_name_en[rows[i].mondo_id.value] = rows[i].mondo_disease_name_en.value);
-      }
-      if (rows[i].mondo_disease_name_ja) { 
-        dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja = new Set();
-        dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja.add(dic[rows[i].ncbi_gene_id.value].mondo_disease_name_ja[rows[i].mondo_id.value] = rows[i].mondo_disease_name_ja.value);
-      }
-      if (rows[i].disease_url) { 
-        dic[rows[i].ncbi_gene_id.value].mondo_id_to_omim_id = new Set();
-        dic[rows[i].ncbi_gene_id.value].mondo_id_to_orpha_id = new Set();
-
-        if (rows[i].disease_url.value.includes("mim"))
-        //if (rows[i].disease_url.value.match("mim"))
-        {
-          dic[rows[i].ncbi_gene_id.value].mondo_id_to_omim_id.add(
-            dic[rows[i].ncbi_gene_id.value].mondo_id_to_omim_id[rows[i].mondo_id.value] = 'OMIM:' + rows[i].disease_id.value
-          );
-        }
-        if (rows[i].disease_url.value.includes("ORDO"))
-        //if (rows[i].disease_url.value.match("ORDO"))
-        {        
-          dic[rows[i].ncbi_gene_id.value].mondo_id_to_orpha_id.add(
-            dic[rows[i].ncbi_gene_id.value].mondo_id_to_orpha_id[rows[i].mondo_id.value] = 'ORPHA:' + rows[i].disease_id.value
-          );
-        }
-      }
-    };
-  }
-    
-  for (let i = 0; i < rows.length; i++) {
-    if(rows[i].ncbi_gene_id.value in dic){
-      if(dic[rows[i].ncbi_gene_id.value].synonym){
-        dic[rows[i].ncbi_gene_id.value].synonym = Array.from(dic[rows[i].ncbi_gene_id.value].synonym)
-      }
-      if(dic[rows[i].ncbi_gene_id.value].inheritance_en){
-        dic[rows[i].ncbi_gene_id.value].inheritance_en = Array.from(dic[rows[i].ncbi_gene_id.value].inheritance_en)
-      }
-      if(dic[rows[i].ncbi_gene_id.value].inheritance_ja){
-        dic[rows[i].ncbi_gene_id.value].inheritance_ja = Array.from(dic[rows[i].ncbi_gene_id.value].inheritance_ja)
-      }
-      if(dic[rows[i].ncbi_gene_id.value].mondo_id){
-        dic[rows[i].ncbi_gene_id.value].mondo_id = Array.from(dic[rows[i].ncbi_gene_id.value].mondo_id)
-      }
-      if(dic[rows[i].ncbi_gene_id.value].mondo_url){
-        dic[rows[i].ncbi_gene_id.value].mondo_url = Array.from(dic[rows[i].ncbi_gene_id.value].mondo_url)
-      }
-    }
+  const rows = result.results.bindings;
+  const convertedData = {}
+  const convertedItemTemplate = {
+    hgnc_gene_id: '',
+    hgnc_gene_url: '',
+    hgnc_gene_symbol: '',
+    full_name: '',
+    ncbi_gene_summary: '',
+    synonym: [],
+    inheritance_en: [],
+    inheritance_ja: [],
+    mondo_id: [],
+    mondo_url: [],
+    mondo_disease_name_en: {},
+    mondo_disease_name_ja: {},
+    mondo_id_to_omim_id: {},
+    mondo_id_to_orpha_id: {}
   }
 
-  return dic
+  const getType = val => {
+    if (Array.isArray(val)) return 'array';
+    if (typeof val === 'object') return 'object';
+    return 'string';
+  }
+  
+  rows.forEach(item => {
+    const geneId = item.ncbi_gene_id.value;
+    if (!convertedData[geneId]) convertedData[geneId] = { ...convertedItemTemplate }
+    Object.entries(item).forEach(([k, v]) => {
+      if (k === 'disease_url') {
+        if (v.value.includes("/mim/")) {
+          convertedData[geneId]['mondo_id_to_omim_id'] = { ...convertedData[geneId]['mondo_id_to_omim_id'], [item.mondo_id.value]: `OMIM:${item.disease_id.value}` }
+        } else if (v.value.includes("/ORDO/")) {
+          convertedData[geneId]['mondo_id_to_orpha_id'] = { ...convertedData[geneId]['mondo_id_to_orpha_id'], [item.mondo_id.value]: `ORPHA:${item.disease_id.value}` }
+        }
+        return
+      }
+      if (!(k in convertedItemTemplate)) return
+      switch (getType(convertedItemTemplate[k])) {
+        case 'string':
+          convertedData[geneId][k] = v.value
+          break
+        case 'array':
+          if (convertedData[geneId][k].includes(v.value)) break
+          convertedData[geneId][k] = [...convertedData[geneId][k], v.value]
+          break
+        case 'object':
+          convertedData[geneId][k] = { ...convertedData[geneId][k], [item.mondo_id.value]: v.value }
+          break
+        default:
+          break
+      }
+    })
+  })
+
+  return convertedData
 };
 ```
