@@ -56,17 +56,8 @@ order by ?hgnc_gene_symbol
 ## Output
 ```javascript
 ({nando_id_list, result})=>{ 
-  var list = []
-  var dic = {}
-  var rows = result.results.bindings;
-
-  for (let i = 0; i < rows.length; i++) {
-    list.push('GENEID:' + rows[i].gene_id.value);
-  }
-
-  if(rows){
-    dic['NANDO:' + nando_id_list] = list;
-  }
-  
-  return dic
+  const rows = result.results.bindings;
+  return { [`NANDO:${nando_id_list}`]: rows.flatMap(row => {
+    return Object.values(row).map(val => `GENEID:${val.value}`)
+  }) }
 }
