@@ -33,7 +33,7 @@ str(?hpo_id) as ?hpo_id
 str(?hpo_url) as ?hpo_url
 str(?hpo_label_en) as ?hpo_label_en
 str(?hpo_label_ja) as ?hpo_label_ja
-str(?definition) as ?definition
+# str(?definition) as ?definition
 str(?disease) as ?disease
 str(?disease_id) as ?disease_id
 

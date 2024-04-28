@@ -25,10 +25,8 @@ WHERE {
   FILTER(CONTAINS(STR(?mim_id), "mim"))
   FILTER(?creator NOT IN("Database Center for Life Science"))
 
-  OPTIONAL {
-    ?mim_id rdfs:seeAlso [rdfs:label ?disease_name_en].
-    ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja")
-  }
+  OPTIONAL { ?mim_id rdfs:seeAlso [rdfs:label ?disease_name_en]. }
+  OPTIONAL { ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
   
   GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
     ?hpo_url rdfs:subClassOf+ ?hpo_category .

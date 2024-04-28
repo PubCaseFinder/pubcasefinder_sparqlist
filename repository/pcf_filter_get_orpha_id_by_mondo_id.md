@@ -26,7 +26,6 @@ SELECT DISTINCT
 ?orpha_id
 
 WHERE {
-  mondo:MONDO_{{mondo_id_list}} <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
   ?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
                   skos:exactMatch ?orpha_url .
   #               <http://www.w3.org/2002/07/owl#equivalentClass> ?orpha_url .

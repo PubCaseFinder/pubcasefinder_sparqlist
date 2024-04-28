@@ -15,10 +15,13 @@ PREFIX sio: <http://semanticscience.org/resource/>
 SELECT COUNT(DISTINCT ?ncbigene) as ?Genes
 
 WHERE {
-  ?as sio:SIO_000628 ?disease ;
+  ?as rdf:type sio:SIO_000983 ;
+      sio:SIO_000628 ?disease ;
       sio:SIO_000628 ?ncbigene .
   ?disease rdf:type ncit:C7057 .
-  ?ncbigene rdf:type ncit:C16612 .
+  ?ncbigene rdf:type ncit:C16612 ;
+    dcterms:identifier ?ncbi_gene_id ;
+    sio:SIO_000205 ?hgnc_gene_url .
   ?an rdf:type oa:Annotation ;
         oa:hasTarget ?disease ;
         oa:hasBody ?hpo_url ;
