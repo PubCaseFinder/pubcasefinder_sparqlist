@@ -65,53 +65,31 @@ WHERE {
 
 ## Output
 ```javascript
-({result})=>{ 
-  var dic = {}
-  var rows = result.results.bindings;
-  
-  dic['hgnc_gene_symbol'] = {}
-  dic['type_of_gene'] = {}
-  dic['location'] = {}
-  dic['full_name'] = {}
-  dic['ncbi_gene_url'] = {}
-  dic['hgnc_gene_url'] = {}
-  dic['ncbi_gene_summary'] = {}
-  dic['other_full_name'] = new Set()
-  dic['synonym'] = new Set()
-
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].hgnc_gene_symbol) { 
-        dic['hgnc_gene_symbol'] = rows[i].hgnc_gene_symbol.value
-     }
-    if (rows[i].type_of_gene) { 
-        dic['type_of_gene'] = rows[i].type_of_gene.value
-     }
-    if (rows[i].location) { 
-        dic['location'] = rows[i].location.value
-     }
-    if (rows[i].full_name) { 
-        dic['full_name'] = rows[i].full_name.value
-     }
-    if (rows[i].ncbi_gene_summary) { 
-        dic['ncbi_gene_summary'] = rows[i].ncbi_gene_summary.value
-     }
-    if (rows[i].synonym) { 
-        dic['synonym'].add(rows[i].synonym.value)
-     }
-    if (rows[i].other_full_name) { 
-        dic['other_full_name'].add(rows[i].other_full_name.value)
-     }
-    if (rows[i].ncbi_gene_url) { 
-        dic['ncbi_gene_url'] = rows[i].ncbi_gene_url.value
-     }
-    if (rows[i].hgnc_gene_url) { 
-        dic['hgnc_gene_url'] = rows[i].hgnc_gene_url.value
-     }
+({ result }) => {
+  const rows = result.results.bindings;
+  const dic = {
+    hgnc_gene_symbol: "",
+    type_of_gene: "",
+    location: "",
+    full_name: "",
+    ncbi_gene_url: "",
+    hgnc_gene_url: "",
+    ncbi_gene_summary: "",
+    other_full_name: [],
+    synonym: []
   }
-  
-  dic['synonym'] = Array.from(dic['synonym'])
-  dic['other_full_name'] = Array.from(dic['other_full_name'])
-  
+  rows.forEach(row => {
+    Object.keys(dic).forEach(k => {
+      const val = row[k].value
+      if (Array.isArray(dic[k]) && !dic[k].includes(val)) {
+        dic[k] = [...dic[k], val]
+        return
+      }
+      if (typeof dic[k] === "string") {
+        dic[k] = val
+      }
+    })
+  })
   return dic
 }
 ```
