@@ -49,40 +49,28 @@ WHERE {
 
 ## Output
 ```javascript
-({result})=>{ 
-  var dic = {}
-  var rows = result.results.bindings;
-  
-  dic['name_en'] = {}
-  dic['name_ja'] = {}
-  dic['definition'] = {}
-  dic['comment'] = {}
-  dic['hpo_url'] = {}
-  dic['synonym'] = new Set();
-  
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].name_en) { 
-        dic['name_en'] = rows[i].name_en.value
-     }
-    if (rows[i].name_ja) { 
-        dic['name_ja'] = rows[i].name_ja.value
-     }
-    if (rows[i].definition) { 
-        dic['definition'] = rows[i].definition.value
-     }
-    if (rows[i].comment) { 
-        dic['comment'] = rows[i].comment.value
-     }
-    if (rows[i].hpo_url) { 
-        dic['hpo_url'] = rows[i].hpo_url.value
-     }
-    if (rows[i].synonym) { 
-        dic['synonym'].add(rows[i].synonym.value)
-     }
+({ result }) => {
+  const rows = result.results.bindings;
+  const dic = {
+    name_en: "",
+    name_ja: "",
+    definition: "",
+    comment: "",
+    hpo_url: "",
+    synonym: []
   }
-  
-  dic['synonym'] = Array.from(dic['synonym'])
-  
+  rows.forEach(row => {
+    Object.keys(dic).forEach(k => {
+      const val = row[k].value
+      if (Array.isArray(dic[k]) && !dic[k].includes(val)) {
+        dic[k] = [...dic[k], val]
+        return
+      }
+      if (typeof dic[k] === "string") {
+        dic[k] = val
+      }
+    })
+  })
   return dic
 }
 ```
