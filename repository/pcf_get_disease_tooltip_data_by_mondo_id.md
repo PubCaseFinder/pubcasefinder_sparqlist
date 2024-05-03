@@ -63,55 +63,35 @@ WHERE {
 
 ## Output
 ```javascript
-({result})=>{ 
-  var dic = {}
-  var rows = result.results.bindings;
-  
-  dic['name_en'] = {}
-  dic['name_ja'] = {}
-  dic['definition'] = {}
-  dic['mondo_url'] = {}
-  dic['omim_id'] = new Set();
-  dic['omim_url'] = new Set();
-  dic['orpha_id'] = new Set();
-  dic['orpha_url'] = new Set();
-  dic['synonym'] = new Set();
-  
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].name_en) { 
-        dic['name_en'] = rows[i].name_en.value
-     }
-    if (rows[i].name_ja) { 
-        dic['name_ja'] = rows[i].name_ja.value
-     }
-    if (rows[i].definition) { 
-        dic['definition'] = rows[i].definition.value
-     }
-    if (rows[i].mondo_url) { 
-        dic['mondo_url'] = rows[i].mondo_url.value
-     }
-    if (rows[i].omim_id) { 
-        dic['omim_id'].add('OMIM:' + rows[i].omim_id.value)
-     }
-    if (rows[i].omim_url) { 
-        dic['omim_url'].add(rows[i].omim_url.value)
-     }
-    if (rows[i].orpha_id) { 
-        dic['orpha_id'].add('ORPHA:' + rows[i].orpha_id.value)
-     }
-    if (rows[i].orpha_url) { 
-        dic['orpha_url'].add(rows[i].orpha_url.value)
-     }
-    if (rows[i].synonym) { 
-        dic['synonym'].add(rows[i].synonym.value)
-     }
+({ result }) => {
+  const rows = result.results.bindings;
+  const dic = {
+    name_en: "",
+    name_ja: "",
+    definition: "",
+    mondo_url: "",
+    omim_id: [],
+    omim_url: [],
+    orpha_id: [],
+    orpha_url: [],
+    synonym: []
   }
-  dic['omim_id'] = Array.from(dic['omim_id'])
-  dic['omim_url'] = Array.from(dic['omim_url'])
-  dic['orpha_id'] = Array.from(dic['orpha_id'])
-  dic['orpha_url'] = Array.from(dic['orpha_url'])
-  dic['synonym'] = Array.from(dic['synonym'])
-  
+  const prefixList = {
+    omim_id: "OMIM:",
+    orpha_id: "ORPHA:"
+  }
+  rows.forEach(row => {
+    Object.keys(dic).forEach(k => {
+      const val = prefixList[k] ? `${prefixList[k]}${row[k].value}` : row[k].value
+      if (Array.isArray(dic[k]) && !dic[k].includes(val)) {
+        dic[k] = [...dic[k], val]
+        return
+      }
+      if (typeof dic[k] === "string") {
+        dic[k] = val
+      }
+    })
+  })
   return dic
 }
 ```
