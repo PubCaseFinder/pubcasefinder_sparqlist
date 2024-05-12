@@ -47,7 +47,7 @@ CONCAT('ORPHA:', STR(?orpha_id)) as ?orpha_id
 str(?orpha_url) as ?orpha_url
 str(?mondo_ID) as ?mondo_id
 ?mondo_url
-str(?DBMS) as ?ur_dbms_url
+#str(?DBMS) as ?ur_dbms_url
 str(?kegg) as ?kegg_url
 str(?gene_reviews) as ?gene_reviews_url
 str(?gtr) as ?gtr_url

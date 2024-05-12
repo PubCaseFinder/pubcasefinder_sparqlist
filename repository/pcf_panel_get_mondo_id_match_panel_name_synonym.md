@@ -69,6 +69,9 @@ WHERE {
               oboinowl:id ?mondo ;
               rdfs:label ?name_en .
     optional { ?mondo_id oboinowl:hasExactSynonym ?synonym } .
+    optional { ?mondo_id owl:deprecated ?deprecated . }
+    FILTER (!BOUND(?deprecated)) .
+    
     optional { ?disease rdfs:seeAlso ?mondo_id ;
                         rdfs:label ?name_ja .            
               FILTER (lang(?name_ja) = "ja") 
@@ -77,7 +80,7 @@ WHERE {
     #FILTER (REGEX(?synonym, ?text, "i") ) .
     
     FILTER (REGEX(?mondo, "mondo", "i")) .
-    FILTER (!REGEX(?name_en, "obsolete", "i")) .
+    #FILTER (!REGEX(?name_en, "obsolete", "i")) .
   
   {{#if lang.en}}
     FILTER (REGEX(?mondo, ?text, "i") || REGEX(?name_en, ?text, "i") || REGEX(?synonym, ?text, "i")) .
