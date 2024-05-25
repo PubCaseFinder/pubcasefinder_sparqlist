@@ -121,12 +121,8 @@ SELECT DISTINCT ?mondo_id WHERE {
 ```
 
 `javascript
-({result})=>{ 
-  return result.results.bindings.map(data => {
-    return Object.keys(data).reduce((obj, key) => {
-      obj[key] = data[key].value;
-      return obj;
-    }, {});
-  });
-}
+({result}) =>
+  result.results.bindings.flatMap(data =>
+    Object.values(data).map(datam => datam.value)
+  );
 ```
