@@ -45,8 +45,6 @@ WHERE {
         oa:hasTarget ?disease_url ;
         oa:hasBody ?hpo_url ;
         dcterms:source [dcterms:creator ?creator] .
-  	FILTER(CONTAINS(STR(?disease_url), "mim"))
-  	#FILTER(CONTAINS(STR(?disease), "Orphanet"))	
   	?disease_url dcterms:identifier ?disease_id .  
     FILTER(?creator NOT IN("Database Center for Life Science"))
     BIND(IF(regex(?disease_url, 'http://www.orpha.net/ORDO/Orphanet_[0-9]'), 'Orphanet', 'OMIM') AS ?disease)

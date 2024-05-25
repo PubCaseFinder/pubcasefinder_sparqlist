@@ -20,22 +20,15 @@ STR(?hgnc_gene_symbol) as ?hgnc_gene_symbol
 STR(?hgnc_gene_url) as ?hgnc_gene_url
 str(?full_name) as ?full_name
 WHERE { 
-  
   ?as rdf:type sio:SIO_000983 ;
-      sio:SIO_000628 ?ncbi_gene_url ;
-      sio:SIO_000628 ?disease_url .
+    sio:SIO_000628 ?ncbi_gene_url ;
+    sio:SIO_000628 ?disease_url .
   ?ncbi_gene_url rdf:type ncit:C16612 ;
-                 dcterms:identifier ?ncbi_gene_id ;
-                 sio:SIO_000205 ?hgnc_gene_url .
-  ?an rdf:type oa:Annotation ;
-        oa:hasTarget ?disease_url ;
-        oa:hasBody ?hpo_url ;
-        dcterms:source [dcterms:creator ?creator] .
-  FILTER(?creator NOT IN("Database Center for Life Science"))
+    dcterms:identifier ?ncbi_gene_id ;
+    sio:SIO_000205 ?hgnc_gene_url .
+  ?disease_url rdf:type ncit:C7057 .
   OPTIONAL { ?ncbi_gene_url dcterms:description ?full_name . }
   ?hgnc_gene_url rdfs:label ?hgnc_gene_symbol .
-  
-  ?disease_url rdf:type ncit:C7057 .
 }
 ```
 
