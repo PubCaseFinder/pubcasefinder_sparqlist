@@ -188,7 +188,7 @@ WHERE {
     const omimId = row.omim_id.value
     if (!dic[omimId]) dic[omimId] = {}
     Object.keys(itemTemplate).forEach(k => {
-      const value = prefixList[k] ? `${prefixList[k]}${row[k]?.value}` : row[k]?.value
+      const value = prefixList[k] && row[k] ? `${prefixList[k]}${row[k]?.value}` : row[k]?.value
       if (!value) return
       if (typeof itemTemplate[k] === 'string') {
         dic[omimId][k] = value

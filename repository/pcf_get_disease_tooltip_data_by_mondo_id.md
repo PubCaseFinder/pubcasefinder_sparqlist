@@ -82,7 +82,7 @@ WHERE {
   }
   rows.forEach(row => {
     Object.keys(dic).forEach(k => {
-      const val = prefixList[k] ? `${prefixList[k]}${row[k].value}` : row[k].value
+      const val = prefixList[k] && row[k] ? `${prefixList[k]}${row[k].value}` : row[k].value
       if (Array.isArray(dic[k]) && !dic[k].includes(val)) {
         dic[k] = [...dic[k], val]
         return
