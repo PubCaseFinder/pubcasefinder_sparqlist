@@ -17,7 +17,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 SELECT DISTINCT 
 ?panel_name
 (GROUP_concat(distinct ?panel_name_synonym; separator = " | ") as ?panel_name_synonym)
-?panel_name_ja
+(GROUP_concat(distinct ?panel_name_ja; separator = " | ") as ?panel_name_ja)
 ?mondo_id
 COUNT(DISTINCT ?gene_symbol_list) as ?gene_count
 (GROUP_concat(distinct ?gene_symbol_list; separator = " | ") as ?gene_symbol_list)
@@ -30,8 +30,7 @@ WHERE {
           ?mondo_list rdfs:subClassOf+ mondo:MONDO_0000001 .
         }
       }
-      optional { ?mondo_list owl:deprecated ?deprecated . }
-      FILTER (!BOUND(?deprecated)) .
+      MINUS { ?mondo_list owl:deprecated ?deprecated . }
       
       ?mondo_sub_tier rdfs:subClassOf* ?mondo_list ;
                       skos:exactMatch ?exactMatch_disease .

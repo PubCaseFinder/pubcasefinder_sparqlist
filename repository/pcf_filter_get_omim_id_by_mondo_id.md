@@ -26,7 +26,6 @@ SELECT DISTINCT
 ?omim_id
 
 WHERE {
-  mondo:MONDO_{{mondo_id_list}} <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
   ?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
                   skos:exactMatch ?mim_uri .
   FILTER(CONTAINS(STR(?mim_uri), "mim"))

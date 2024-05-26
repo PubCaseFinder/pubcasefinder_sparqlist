@@ -152,299 +152,64 @@ WHERE {
 ## Output
 ```javascript
 ({result})=>{ 
-  var dic = {}
-  var rows = result.results.bindings;
-  
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].orpha_id.value in dic)
-    {
-      if (rows[i].orpha_url) { 
-        dic[rows[i].orpha_id.value].orpha_url = rows[i].orpha_url.value;
-      }
-      if (rows[i].orpha_disease_name_en) { 
-        dic[rows[i].orpha_id.value].orpha_disease_name_en = rows[i].orpha_disease_name_en.value;
-      }
-      if (rows[i].orpha_disease_name_ja) { 
-        dic[rows[i].orpha_id.value].orpha_disease_name_ja = rows[i].orpha_disease_name_ja.value;
-      }
-      if (rows[i].description) { 
-        dic[rows[i].orpha_id.value].description = rows[i].description.value;
-      }
-      if (rows[i].ur_dbms_url) { 
-        dic[rows[i].orpha_id.value].ur_dbms_url = rows[i].ur_dbms_url.value;
-      }
-      if (rows[i].count_hpo_id) { 
-        dic[rows[i].orpha_id.value].count_hpo_id = rows[i].count_hpo_id.value;
-      }
-      if (rows[i].ncbi_gene_id) { 
-        if(dic[rows[i].orpha_id.value].ncbi_gene_id)
-        	dic[rows[i].orpha_id.value].ncbi_gene_id.add('GENEID:' + rows[i].ncbi_gene_id.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].ncbi_gene_id = new Set();
-          dic[rows[i].orpha_id.value].ncbi_gene_id.add('GENEID:' + rows[i].ncbi_gene_id.value);
-        }
-      }
-      if (rows[i].hgnc_gene_symbol) { 
-        if(dic[rows[i].orpha_id.value].hgnc_gene_symbol)
-          dic[rows[i].orpha_id.value].hgnc_gene_symbol.add(rows[i].hgnc_gene_symbol.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].hgnc_gene_symbol = new Set();
-          dic[rows[i].orpha_id.value].hgnc_gene_symbol.add(rows[i].hgnc_gene_symbol.value);
-        }
-      }
-      if (rows[i].inheritance_en) { 
-        if (dic[rows[i].orpha_id.value].inheritance_en)
-	        dic[rows[i].orpha_id.value].inheritance_en.add(dic[rows[i].orpha_id.value].inheritance_en[rows[i].inheritance_id_en.value] = rows[i].inheritance_en.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].inheritance_en = new Set();
-          dic[rows[i].orpha_id.value].inheritance_en.add(dic[rows[i].orpha_id.value].inheritance_en[rows[i].inheritance_id_en.value] = rows[i].inheritance_en.value);
-        }
-      }      
-      if (rows[i].inheritance_ja) { 
-        if(dic[rows[i].orpha_id.value].inheritance_ja)
-          dic[rows[i].orpha_id.value].inheritance_ja.add(rows[i].inheritance_ja.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].inheritance_ja = new Set();
-          dic[rows[i].orpha_id.value].inheritance_ja.add(rows[i].inheritance_ja.value);
-        }
-        if (dic[rows[i].orpha_id.value].inheritance_ja)
-	        dic[rows[i].orpha_id.value].inheritance_ja.add(dic[rows[i].orpha_id.value].inheritance_ja[rows[i].inheritance_id_ja.value] = rows[i].inheritance_ja.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].inheritance_ja = new Set();
-          dic[rows[i].orpha_id.value].inheritance_ja.add(dic[rows[i].orpha_id.value].inheritance_ja[rows[i].inheritance_id_ja.value] = rows[i].inheritance_ja.value);
-        }
-      }
-/*      
-      if (rows[i].mondo_id) { 
-        dic[rows[i].orpha_id.value].mondo_id.add(rows[i].mondo_id.value);
-      }
-      if (rows[i].mondo_url) { 
-        dic[rows[i].orpha_id.value].mondo_url.add(rows[i].mondo_url.value);
-      }
-      if(rows[i].kegg_url) {
-        dic[rows[i].orpha_id.value].kegg_url.add(rows[i].kegg_url.value);
-      }
-      if (rows[i].gene_reviews_url) { 
-        dic[rows[i].orpha_id.value].gene_reviews_url.add(rows[i].gene_reviews_url.value);
-      }
-*/
-      if (rows[i].mondo_id) { 
-        if(dic[rows[i].orpha_id.value].mondo_id)
-          dic[rows[i].orpha_id.value].mondo_id.add(rows[i].mondo_id.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].mondo_id = new Set();
-          dic[rows[i].orpha_id.value].mondo_id.add(rows[i].mondo_id.value);
-        }
-      }
-      if (rows[i].mondo_url) { 
-        if(dic[rows[i].orpha_id.value].mondo_url)
-          dic[rows[i].orpha_id.value].mondo_url.add(rows[i].mondo_url.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].mondo_url = new Set();
-          dic[rows[i].orpha_id.value].mondo_url.add(rows[i].mondo_url.value);
-        }
-      }
-      if (rows[i].nando_url) { 
-        if(dic[rows[i].orpha_id.value].nando_url)
-          dic[rows[i].orpha_id.value].nando_url.add(rows[i].nando_url.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].nando_url = new Set();
-          dic[rows[i].orpha_id.value].nando_url.add(rows[i].nando_url.value);
-        }
-      }
-      if(rows[i].kegg_url) {
-        if(dic[rows[i].orpha_id.value].kegg_url)
-          dic[rows[i].orpha_id.value].kegg_url.add(rows[i].kegg_url.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].kegg_url = new Set();
-          dic[rows[i].orpha_id.value].kegg_url.add(rows[i].kegg_url.value);
-        }
-      }
-      if (rows[i].gene_reviews_url) { 
-        if(dic[rows[i].orpha_id.value].gene_reviews_url)
-          dic[rows[i].orpha_id.value].gene_reviews_url.add(rows[i].gene_reviews_url.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].gene_reviews_url = new Set();
-          dic[rows[i].orpha_id.value].gene_reviews_url.add(rows[i].gene_reviews_url.value);
-        }
-      }      
-      if (rows[i].gtr_url) { 
-        if (dic[rows[i].orpha_id.value].gtr_url)
-	        dic[rows[i].orpha_id.value].gtr_url.add(rows[i].gtr_url.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].gtr_url = new Set();
-          dic[rows[i].orpha_id.value].gtr_url.add(rows[i].gtr_url.value);
-        }        
-      }
-      if (rows[i].omim_id) { 
-        if(dic[rows[i].orpha_id.value].omim_id)
-          dic[rows[i].orpha_id.value].omim_id.add(rows[i].omim_id.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].omim_id = new Set();
-          dic[rows[i].orpha_id.value].omim_id.add(rows[i].omim_id.value);
-        }
-      }
-      if (rows[i].omim_url) { 
-        if(dic[rows[i].orpha_id.value].omim_url)
-          dic[rows[i].orpha_id.value].omim_url.add(rows[i].omim_url.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].omim_url = new Set();
-          dic[rows[i].orpha_id.value].omim_url.add(rows[i].omim_url.value);
-        }
-      }
-      if (rows[i].hpo_id) { 
-        if(dic[rows[i].orpha_id.value].hpo_id)
-          dic[rows[i].orpha_id.value].hpo_id.add(rows[i].hpo_id.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].hpo_id = new Set();
-          dic[rows[i].orpha_id.value].hpo_id.add(rows[i].hpo_id.value);
-        }
-      }
-      if (rows[i].hpo_url) { 
-        if(dic[rows[i].orpha_id.value].hpo_url)
-          dic[rows[i].orpha_id.value].hpo_url.add(rows[i].hpo_url.value);
-        else
-        {
-          dic[rows[i].orpha_id.value].hpo_url = new Set();
-          dic[rows[i].orpha_id.value].hpo_url.add(rows[i].hpo_url.value);
-        }
-      }
-    }
-    else
-    {
-      dic[rows[i].orpha_id.value] = {};
-      
-      if (rows[i].orpha_url) { 
-        dic[rows[i].orpha_id.value].orpha_url = rows[i].orpha_url.value;
-      }
-      if (rows[i].orpha_disease_name_en) { 
-        dic[rows[i].orpha_id.value].orpha_disease_name_en = rows[i].orpha_disease_name_en.value;
-      }
-      if (rows[i].orpha_disease_name_ja) { 
-        dic[rows[i].orpha_id.value].orpha_disease_name_ja = rows[i].orpha_disease_name_ja.value;
-      }
-      if (rows[i].description) { 
-        dic[rows[i].orpha_id.value].description = rows[i].description.value;
-      }
-      if (rows[i].ur_dbms_url) { 
-        dic[rows[i].orpha_id.value].ur_dbms_url = rows[i].ur_dbms_url.value;
-      }
-      if (rows[i].count_hpo_id) { 
-        dic[rows[i].orpha_id.value].count_hpo_id = rows[i].count_hpo_id.value;
-      }
-      if (rows[i].ncbi_gene_id) { 
-        dic[rows[i].orpha_id.value].ncbi_gene_id = new Set();
-        dic[rows[i].orpha_id.value].ncbi_gene_id.add('GENEID:' + rows[i].ncbi_gene_id.value);
-      }
-      if (rows[i].hgnc_gene_symbol) { 
-        dic[rows[i].orpha_id.value].hgnc_gene_symbol = new Set();
-        dic[rows[i].orpha_id.value].hgnc_gene_symbol.add(rows[i].hgnc_gene_symbol.value);
-      }
-      if (rows[i].inheritance_en) { 
-        dic[rows[i].orpha_id.value].inheritance_en = new Set();
-        dic[rows[i].orpha_id.value].inheritance_en.add(dic[rows[i].orpha_id.value].inheritance_en[rows[i].inheritance_id_en.value] = rows[i].inheritance_en.value);
-      }
-      if (rows[i].inheritance_ja) { 
-        dic[rows[i].orpha_id.value].inheritance_ja = new Set();
-        dic[rows[i].orpha_id.value].inheritance_ja.add(dic[rows[i].orpha_id.value].inheritance_ja[rows[i].inheritance_id_en.value] = rows[i].inheritance_ja.value);
-      }
-      if (rows[i].mondo_id) { 
-        dic[rows[i].orpha_id.value].mondo_id = new Set();
-        dic[rows[i].orpha_id.value].mondo_id.add(rows[i].mondo_id.value);
-      }
-      if (rows[i].mondo_url) { 
-        dic[rows[i].orpha_id.value].mondo_url = new Set();
-        dic[rows[i].orpha_id.value].mondo_url.add(rows[i].mondo_url.value);
-      }
-      if (rows[i].nando_url) { 
-        dic[rows[i].orpha_id.value].nando_url = new Set();
-        dic[rows[i].orpha_id.value].nando_url.add(rows[i].nando_url.value);
-      }
-      if(rows[i].kegg_url) {
-        dic[rows[i].orpha_id.value].kegg_url = new Set();
-        dic[rows[i].orpha_id.value].kegg_url.add(rows[i].kegg_url.value);
-      }
-      if (rows[i].gene_reviews_url) { 
-        dic[rows[i].orpha_id.value].gene_reviews_url = new Set();
-        dic[rows[i].orpha_id.value].gene_reviews_url.add(rows[i].gene_reviews_url.value);
-      }
-      if (rows[i].gtr_url) { 
-        dic[rows[i].orpha_id.value].gtr_url = new Set();
-        dic[rows[i].orpha_id.value].gtr_url.add(rows[i].gtr_url.value);
-      }
-      if (rows[i].omim_id) { 
-        dic[rows[i].orpha_id.value].omim_id = new Set();
-        dic[rows[i].orpha_id.value].omim_id.add(rows[i].omim_id.value);
-      }
-      if (rows[i].omim_url) { 
-        dic[rows[i].orpha_id.value].omim_url = new Set();
-        dic[rows[i].orpha_id.value].omim_url.add(rows[i].omim_url.value);
-      }
-      if (rows[i].hpo_id) { 
-        dic[rows[i].orpha_id.value].hpo_id = new Set();
-        dic[rows[i].orpha_id.value].hpo_id.add(rows[i].hpo_id.value);
-      }
-      if (rows[i].hpo_url) { 
-        dic[rows[i].orpha_id.value].hpo_url = new Set();
-        dic[rows[i].orpha_id.value].hpo_url.add(rows[i].hpo_url.value);
-      }
-    };
+  const rows = result.results.bindings;
+  const dic = {}
+
+  const itemTemplate = {
+    orpha_url: '',
+    orpha_disease_name_en: '',
+    orpha_disease_name_ja: '',
+    description: '',
+    count_hpo_id: '',
+    ncbi_gene_id: [],
+    gene_reviews_url: [],
+    hgnc_gene_symbol: [],
+    hpo_id: [],
+    hpo_url: [],
+    inheritance_en: {},
+    inheritance_ja: {},
+    mondo_id: [],
+    mondo_url: [],
+    kegg_url: [],
+    nando_url: [],
+    gtr_url: [],
+    omim_id: [],
+    omim_url: [],
+    ur_dbms_url: []
   }
 
-  for (let i = 0; i < rows.length; i++) {
-    if(rows[i].orpha_id.value in dic){
-      if(dic[rows[i].orpha_id.value].ncbi_gene_id){
-        dic[rows[i].orpha_id.value].ncbi_gene_id = Array.from(dic[rows[i].orpha_id.value].ncbi_gene_id)
-      }
-      if(dic[rows[i].orpha_id.value].hgnc_gene_symbol){
-        dic[rows[i].orpha_id.value].hgnc_gene_symbol = Array.from(dic[rows[i].orpha_id.value].hgnc_gene_symbol)
-      }
-      if(dic[rows[i].orpha_id.value].mondo_id){
-        dic[rows[i].orpha_id.value].mondo_id = Array.from(dic[rows[i].orpha_id.value].mondo_id)
-      }
-      if(dic[rows[i].orpha_id.value].mondo_url){
-        dic[rows[i].orpha_id.value].mondo_url = Array.from(dic[rows[i].orpha_id.value].mondo_url)
-      }
-      if(dic[rows[i].orpha_id.value].nando_url){
-        dic[rows[i].orpha_id.value].nando_url = Array.from(dic[rows[i].orpha_id.value].nando_url)
-      }
-      if(dic[rows[i].orpha_id.value].kegg_url){
-        dic[rows[i].orpha_id.value].kegg_url = Array.from(dic[rows[i].orpha_id.value].kegg_url)
-      }
-      if(dic[rows[i].orpha_id.value].gene_reviews_url){
-        dic[rows[i].orpha_id.value].gene_reviews_url = Array.from(dic[rows[i].orpha_id.value].gene_reviews_url)
-      }
-      if(dic[rows[i].orpha_id.value].gtr_url){
-        dic[rows[i].orpha_id.value].gtr_url = Array.from(dic[rows[i].orpha_id.value].gtr_url)
-      }
-      if(dic[rows[i].orpha_id.value].omim_id){
-        dic[rows[i].orpha_id.value].omim_id = Array.from(dic[rows[i].orpha_id.value].omim_id)
-      }
-      if(dic[rows[i].orpha_id.value].omim_url){
-        dic[rows[i].orpha_id.value].omim_url = Array.from(dic[rows[i].orpha_id.value].omim_url)
-      }
-      if(dic[rows[i].orpha_id.value].hpo_id){
-        dic[rows[i].orpha_id.value].hpo_id = Array.from(dic[rows[i].orpha_id.value].hpo_id)
-      }
-      if(dic[rows[i].orpha_id.value].hpo_url){
-        dic[rows[i].orpha_id.value].hpo_url = Array.from(dic[rows[i].orpha_id.value].hpo_url)
-      }
-    }
+  const prefixList = {
+    ncbi_gene_id: "GENEID:",
   }
+
+  const objKeyMapping = {
+    inheritance_en: 'inheritance_id_en',
+    inheritance_ja: 'inheritance_id_ja'
+  }
+
+  rows.forEach(row => {
+    const orphaId = row.orpha_id.value
+    if (!dic[orphaId]) dic[orphaId] = {}
+    Object.keys(itemTemplate).forEach(k => {
+      const value = prefixList[k] && row[k] ? `${prefixList[k]}${row[k]?.value}` : row[k]?.value
+      if (!value) return
+      if (typeof itemTemplate[k] === 'string') {
+        dic[orphaId][k] = value
+      } else if (Array.isArray(itemTemplate[k]) && !dic[orphaId][k]?.includes(value)) {
+        if (!dic[orphaId][k]) {
+          dic[orphaId][k] = [value]
+          return
+        }
+        dic[orphaId][k] = [...dic[orphaId][k], value]
+      } else if (typeof itemTemplate[k] === 'object' && itemTemplate[k] !== null) {
+        if (!dic[orphaId][k]) {
+          dic[orphaId][k] = { [row[objKeyMapping[k]]?.value]: value }
+          return
+        }
+        dic[orphaId][k][row[objKeyMapping[k]]?.value] = value
+      }
+    })
+  })
 
   return dic
 };

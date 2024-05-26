@@ -14,17 +14,20 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX oboinowl: <http://www.geneontology.org/formats/oboInOwl#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT DISTINCT ?mondo_id ?panel_name ?panel_name_ja COUNT(DISTINCT ?gene) as ?count WHERE {
+SELECT DISTINCT 
+  ?mondo_id
+  ?panel_name
+  (GROUP_concat(distinct ?panel_name_ja; separator = " | ") as ?panel_name_ja)
+  COUNT(DISTINCT ?gene) as ?count
+WHERE {
   {
     SELECT DISTINCT ?mondo_list ?exactMatch_disease WHERE { 
       {
         SELECT DISTINCT ?mondo_list WHERE { 
           ?mondo_list rdfs:subClassOf+ mondo:MONDO_0000001 .
+          MINUS { ?mondo_list owl:deprecated ?deprecated . }
         }
       }
-      optional { ?mondo_list owl:deprecated ?deprecated . }
-      FILTER (!BOUND(?deprecated)) .
-      
       ?mondo_sub_tier rdfs:subClassOf* ?mondo_list ;
                       skos:exactMatch ?exactMatch_disease .
     }
