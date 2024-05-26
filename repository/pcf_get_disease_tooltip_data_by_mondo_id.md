@@ -92,6 +92,9 @@ WHERE {
       }
     })
   })
+  Object.entries(dic).forEach(([k, v]) => {
+    if (!v || v.length === 0) delete dic[k]
+  })
   return dic
 }
 ```

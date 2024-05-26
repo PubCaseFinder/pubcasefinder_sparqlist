@@ -144,7 +144,15 @@ WHERE {
       }
     })
   })
-
+  Object.values(convertedData).forEach(data => {
+    Object.entries(data).forEach(([k, v]) => {
+      if ((typeof v === 'string' && !v) || Array.isArray(v) && v.length === 0) {
+        delete data[k] 
+      } else if (typeof v === 'object' && Object.keys(v).length === 0) {
+        delete data[k] 
+      }
+    })
+  })
   return convertedData
 };
 ```
