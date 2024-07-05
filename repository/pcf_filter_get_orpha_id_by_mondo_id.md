@@ -11,6 +11,7 @@ https://pubcasefinder-rdf.dbcls.jp/sparql
 ```javascript
 ({mondo_id}) => {
   mondo_id = mondo_id.replace(/MONDO:/g,"")
+  mondo_id = 'mondo:MONDO_' + mondo_id.replace(/[\s,]+/g," mondo:MONDO_")
   return mondo_id;
 }
 ```
@@ -26,8 +27,11 @@ SELECT DISTINCT
 ?orpha_id
 
 WHERE {
-  mondo:MONDO_{{mondo_id_list}} <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
-  ?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
+  VALUES ?mondo_list { {{mondo_id_list}} }
+  
+  #mondo:MONDO_{{mondo_id_list}} <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
+  ?mondo_list <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
+  ?mondo_sub_tier rdfs:subClassOf* ?mondo_list ;
                   skos:exactMatch ?orpha_url .
   #               <http://www.w3.org/2002/07/owl#equivalentClass> ?orpha_url .
   FILTER(CONTAINS(STR(?orpha_url), "Orphanet_"))  
@@ -47,7 +51,8 @@ WHERE {
   }
 
   if(rows){
-    dic['MONDO:' + mondo_id_list] = list;
+    //dic['MONDO:' + mondo_id_list] = list;
+    dic[mondo_id_list.replace(/mondo:MONDO_/gi,'MONDO:').replace(/ /gi,'|')] = list;
   }
   
   return dic
