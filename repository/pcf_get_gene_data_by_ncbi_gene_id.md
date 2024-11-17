@@ -76,7 +76,8 @@ WHERE {
       ?mondo_url rdfs:label ?mondo_disease_name_en ;
                  <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id . 
       
-      OPTIONAL { ?disease_url nando:hasInheritance ?inheritance . ?inheritance rdfs:label ?inheritance_en, ?inheritance_ja . FILTER (lang(?inheritance_en) = "en") . FILTER (lang(?inheritance_ja) = "ja") . }
+      #OPTIONAL { ?disease_url nando:hasInheritance ?inheritance . ?inheritance rdfs:label ?inheritance_en, ?inheritance_ja . FILTER (lang(?inheritance_en) = "en") . FILTER (lang(?inheritance_ja) = "ja") . }
+      OPTIONAL { ?disease_url nando:hasInheritance ?inheritance . ?inheritance rdfs:label ?inheritance_en, ?inheritance_ja . FILTER (lang(?inheritance_en) = "") . FILTER (lang(?inheritance_ja) = "ja") . }
       OPTIONAL { ?disease_url rdfs:label ?mondo_disease_name_ja FILTER (lang(?mondo_disease_name_ja) = "ja") }
 
       BIND (replace(str(?hgnc_gene_url), 'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:', '') AS ?hgnc_gene_id)

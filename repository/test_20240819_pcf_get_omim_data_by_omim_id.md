@@ -1,13 +1,13 @@
 # [PCF] Get OMIM data by OMIM ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `omim_id` OMIM ID (複数のIDを入力可能)
-  * default: 117600
-  * example: OMIM:181500,OMIM:214800,OMIM:263750,OMIM:219000, 263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 230400, 182280263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 613172, 613174, 609909, 145250, 146580, 613177, 613179, 184850, 205400, 601195 
+  * default: OMIM:181500,OMIM:214800,OMIM:263750,OMIM:219000
+  * example: 263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 230400, 182280263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 613172, 613174, 609909, 145250, 146580, 613177, 613179, 184850, 205400, 601195 
 * `mode` (パラメータに"download"を入力すると全件取得可能)
 	* example: download
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql/
 
 ## `omim_id_list`
 ```javascript
@@ -18,7 +18,7 @@ https://pubcasefinder-rdf.dbcls.jp/sparql
 }
 ```
 
-## `result` 
+## `omim2mondo` 
 ```sparql
 #268300 ?mondo rdfs:label ?disease_name . 문제 해결해야됨
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -35,7 +35,6 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX oboInowl: <http://www.geneontology.org/formats/oboInOwl#>
 
 SELECT DISTINCT
-str(?disease_name_en) as ?omim_disease_name_en
 str(?disease_name_ja) as ?omim_disease_name_ja
 str(?gene_ID) as ?ncbi_gene_id
 str(?gene_symbol) as ?hgnc_gene_symbol
@@ -45,21 +44,12 @@ str(?inheritance_id_en) as ?inheritance_id_en
 str(?inheritance_id_ja) as ?inheritance_id_ja
 CONCAT('OMIM:', STR(?omim_id)) as ?omim_id
 str(?mim_id) as ?omim_url
-str(?mondo_ID) as ?mondo_id
 ?mondo_url
 str(?DBMS) as ?ur_dbms_url
 str(?kegg) as ?kegg_url
 str(?gene_reviews) as ?gene_reviews_url
 str(?gtr) as ?gtr_url
-str(?description) as ?description
-str(?nando_url) as ?nando_url
 ?hpo as ?count_hpo_id
-#CONCAT('ORPHA:', STR(?orpha_id)) as ?orpha_id
-str(?orpha_id) as ?orpha_id
-str(?orpha_url) as ?orpha_url
-str(?hpo_id) as ?hpo_id
-str(?hpo_url) as ?hpo_url
-
 WHERE {
   {{#if mode}}
     {
@@ -69,7 +59,7 @@ WHERE {
             oa:hasBody ?hpo ;
             dcterms:source [dcterms:creator ?creator] .
         FILTER(CONTAINS(STR(?mim_id), "mim"))
-#        FILTER(?creator NOT IN("Database Center for Life Science"))
+        FILTER(?creator NOT IN("Database Center for Life Science"))
         GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
           ?hpo rdfs:subClassOf+ ?hpo_category .
           ?hpo_category rdfs:subClassOf obo:HP_0000118 .
@@ -86,7 +76,7 @@ WHERE {
               oa:hasBody ?hpo ;
               dcterms:source [dcterms:creator ?creator] .
           FILTER(CONTAINS(STR(?mim_id), "mim"))
-#          FILTER(?creator NOT IN("Database Center for Life Science"))
+          FILTER(?creator NOT IN("Database Center for Life Science"))
           GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
             ?hpo rdfs:subClassOf+ ?hpo_category .
             ?hpo_category rdfs:subClassOf obo:HP_0000118 .
@@ -115,25 +105,10 @@ WHERE {
       OPTIONAL { ?mim_id rdfs:seeAlso ?gtr  FILTER(CONTAINS(STR(?gtr), "gtr")) }
 
       #mondo id, disease name, description
-      #OPTIONAL { ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
-      OPTIONAL { ?mim_id rdfs:seeAlso ?mondo . BIND (replace(str(?mondo), 'http://purl.obolibrary.org/obo/MONDO_', 'https://monarchinitiative.org/disease/MONDO:') AS ?mondo_url) }
-      
-      ?mondo rdfs:label ?disease_name_en .
-      FILTER (lang(?disease_name_en) = "")
-      OPTIONAL { ?mondo rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
-      
-      OPTIONAL { ?mondo <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_ID . }
-      OPTIONAL { ?mondo obo:IAO_0000115 ?description . }
-      
-      OPTIONAL { ?mondo owl:hasDbXref ?hpo_id  FILTER(CONTAINS(STR(?hpo_id), "HP")) }
-      BIND (replace(str(?hpo_id), 'HP:', 'http://purl.obolibrary.org/obo/HP_') AS ?hpo_url)      
-      
-      #nando url
-      OPTIONAL {
-        GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/nando>{
-          ?nando_url skos:closeMatch ?mondo.
-        }
-      }
+      OPTIONAL { ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
+      #OPTIONAL { ?mim_id rdfs:seeAlso ?mondo . FILTER(CONTAINS(STR(?mondo), "mondo")) BIND (replace(str(?mondo), 'http://purl.obolibrary.org/obo/MONDO_', 'https://monarchinitiative.org/disease/MONDO:') AS ?mondo_url) }
+      OPTIONAL { ?mim_id rdfs:seeAlso ?mondo . FILTER(CONTAINS(STR(?mondo), "MONDO")) BIND (replace(str(?mondo), 'http://purl.obolibrary.org/obo/MONDO_', 'https://monarchinitiative.org/disease/MONDO:') AS ?mondo_url) }
+
       #gene id, gene symbol
       OPTIONAL {
         ?as sio:SIO_000628 ?mim_id ;
@@ -146,19 +121,67 @@ WHERE {
       }
 
       BIND (replace(str(?mim_id), 'http://identifiers.org/mim/', '') AS ?omim_id)
+}
+```
+
+## `mondo_uri_list` get mondo uri
+```javascript
+({
+  json({omim2mondo}) {
+    let rows = omim2mondo.results.bindings;
+    let mondo_uris = [];
+    
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].mondo_url) {
+        mondo_uris.push((rows[i].mondo_url.value).replace('https://monarchinitiative.org/disease/MONDO:', 'obo:MONDO_'));
+      } else {
+        mondo_uris.push("NA");
+      }
+    }
+    //return mondo_uris[0]
+    //return "obo:" + mondo_uris.join(' obo:')
+    let uniqueMondoUris = [...new Set(mondo_uris)];
+    return uniqueMondoUris.join(' ')
+  }
+})
+```
+
+l/
+
+## `mondo_result` 
+```sparql
+#268300 ?mondo rdfs:label ?disease_name . 문제 해결해야됨
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX nando: <http://nanbyodata.jp/ontology/nando#>
+PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
+PREFIX mim: <http://identifiers.org/mim/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX owl: <http://www.geneontology.org/formats/oboInOwl#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX oboInowl: <http://www.geneontology.org/formats/oboInOwl#>
+
+SELECT DISTINCT *
+WHERE {
+  VALUES ?mondo { {{mondo_uri_list}} }
+  
+      #mondo id, disease name, description
+      #OPTIONAL { ?mim_id rdfs:seeAlso ?mondo . BIND (replace(str(?mondo), 'http://purl.obolibrary.org/obo/MONDO_', 'https://monarchinitiative.org/disease/MONDO:') AS ?mondo_url) }
       
-      OPTIONAL { ?ordo_id rdfs:seeAlso ?mondo FILTER(CONTAINS(STR(?ordo_id), "ORDO")) }
-      BIND (replace(str(?ordo_id), 'http://www.orpha.net/ORDO/Orphanet_', 'ORPHA:') AS ?orpha_id)
-      BIND (CONCAT('https://www.orpha.net/en/disease/detail/', ?orpha_id, '?name=', ?orpha_id, '&mode=orpha') AS ?orpha_url)
-      
+  OPTIONAL { ?mondo oboInowl:id ?mondo_ID . }
+  OPTIONAL { ?mondo obo:IAO_0000115 ?description . }
 }
 ```
 
 ## Output
 ```javascript
-({result})=>{ 
+({omim2mondo, mondo_result})=>{ 
   var dic = {}
-  var rows = result.results.bindings;
+  var rows = omim2mondo.results.bindings;
+  var mondo_rows = mondo_result.results.bindings;
   
   for (let i = 0; i < rows.length; i++) {
     if (rows[i].omim_id.value in dic)

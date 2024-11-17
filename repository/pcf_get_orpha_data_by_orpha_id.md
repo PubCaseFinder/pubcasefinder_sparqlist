@@ -69,7 +69,7 @@ WHERE {
             oa:hasBody ?hpo ;
             dcterms:source [dcterms:creator ?creator] .
         FILTER(CONTAINS(STR(?ordo_id), "ORDO"))
-        FILTER(?creator NOT IN("Database Center for Life Science"))
+#        FILTER(?creator NOT IN("Database Center for Life Science"))
         GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
           ?hpo rdfs:subClassOf+ ?hpo_category .
           ?hpo_category rdfs:subClassOf obo:HP_0000118 .
@@ -86,7 +86,7 @@ WHERE {
               oa:hasBody ?hpo ;
               dcterms:source [dcterms:creator ?creator] .
           FILTER(CONTAINS(STR(?ordo_id), "ORDO"))
-          FILTER(?creator NOT IN("Database Center for Life Science"))
+#          FILTER(?creator NOT IN("Database Center for Life Science"))
           GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
             ?hpo rdfs:subClassOf+ ?hpo_category .
             ?hpo_category rdfs:subClassOf obo:HP_0000118 .
