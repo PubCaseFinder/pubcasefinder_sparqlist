@@ -2,7 +2,7 @@ version: '3'
 services:
   sparqlist:
     container_name: ${CONTAINER_NAME:-pubcasefinder-sparqlist}
-    image: ${IMAGE_NAME:-dbcls/sparqlist}
+    image: ${IMAGE_NAME:-ghcr.io/dbcls/sparqlist}
     volumes:
       - ${REPOSITORY:-./repository}:/app/repository
     ports:
