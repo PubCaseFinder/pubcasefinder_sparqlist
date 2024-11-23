@@ -76,6 +76,8 @@ WHERE {
       #---------- gene count end
       
       ?mondo rdfs:label ?name_en .
+      FILTER (lang(?name_en) = "")
+      OPTIONAL { ?mondo rdfs:label ?name_ja FILTER (lang(?name_ja) = "ja") }
       optional { ?mondo mondo:IAO_0000115 ?definition }
       optional { ?mondo oboinowl:id ?mondo_id }
       optional { ?mondo oboinowl:hasExactSynonym ?synonym }
@@ -85,12 +87,12 @@ WHERE {
                 BIND (replace(replace(str(?icd10_id), '[*+]', ''), "ICD10:", "") AS ?icd10_url)
                 #BIND (replace(str(?icd10_url), '*:', '') AS ?icd10_url2)
                }
-            
-      optional { ?disease rdfs:seeAlso ?mondo ;
-                          rdfs:label ?name_ja .            
-                FILTER (lang(?name_ja) = "ja") 
-               }
-
+# Start 20240829 Changes due to the addition of MONDO Japanese labels
+#      optional { ?disease rdfs:seeAlso ?mondo ;
+#                          rdfs:label ?name_ja .            
+#                FILTER (lang(?name_ja) = "ja") 
+#               }
+# End
       optional { ?omim_url rdfs:seeAlso ?mondo ;
                            dcterms:identifier ?omim_id .
                 FILTER(CONTAINS(STR(?omim_url), "mim")) 

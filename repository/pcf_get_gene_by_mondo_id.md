@@ -30,6 +30,7 @@ SELECT
 ?hgnc_gene_symbol 
 ?gene_id
 (GROUP_concat(distinct ?disease_info; separator = " | ") as ?disease_info)
+(GROUP_concat(distinct ?disease_info_ja; separator = " | ") as ?disease_info_ja)
 (GROUP_concat(distinct ?source_name; separator = " | ") as ?source_name)
 (GROUP_concat(distinct ?inheritance_en; separator = ", ") as ?inheritance_en)
 (GROUP_concat(distinct ?inheritance_ja; separator = ", ") as ?inheritance_ja)
@@ -48,16 +49,29 @@ WHERE {
   ?disease rdf:type ncit:C7057 ;
            dcterm:identifier ?disease_id ;
            rdfs:seeAlso [rdfs:label ?disease_name] .
-  ?gene rdf:type ncit:C16612 ;
+    ?gene rdf:type ncit:C16612 ;
         sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] ;
         dcterm:identifier ?gene_id . 
   OPTIONAL { 
     ?disease nando:hasInheritance ?inheritance .
-    ?inheritance rdfs:label ?inheritance_en, ?inheritance_ja .
-    FILTER (lang(?inheritance_en) = "en") . FILTER (lang(?inheritance_ja) = "ja") . 
+    #?inheritance rdfs:label ?inheritance_en, ?inheritance_ja .
+    #FILTER (lang(?inheritance_en) = "en") . FILTER (lang(?inheritance_ja) = "ja") . 
+    ?inheritance rdfs:label ?inheritance_ja .
+    FILTER (lang(?inheritance_ja) = "ja") .
+    GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp> {
+      ?inheritance rdfs:label ?inheritance_en . 
+    }
   }
   
   BIND(CONCAT(?disease_name, IF(CONTAINS(STR(?disease), "Orphanet"), ", ORPHA:", ", OMIM:"), ?disease_id) AS ?disease_info)
+# Start 20240829 Changes due to the addition of MONDO Japanese labels
+  FILTER (lang(?disease_name) = "")
+  OPTIONAL { ?disease dcterm:identifier ?disease_id ;
+                      rdfs:seeAlso [rdfs:label ?disease_name_ja] 
+             BIND(CONCAT(?disease_name_ja, IF(CONTAINS(STR(?disease), "Orphanet"), ", ORPHA:", ", OMIM:"), ?disease_id) AS ?disease_info_ja)
+             FILTER (lang(?disease_name_ja) = "ja")
+           }
+# End
   BIND(IF(STR(?source) = 'http://www.orphadata.org/data/xml/en_product6.xml', 'Orphadata',
        IF(STR(?source) = 'ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen', 'OMIM', 'GenCC')) AS ?source_name)
 } order by ?hgnc_gene_symbol

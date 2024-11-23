@@ -68,14 +68,18 @@ WHERE {
     ?mondo_id rdf:type owl:Class ;
               oboinowl:id ?mondo ;
               rdfs:label ?name_en .
+    FILTER (lang(?name_en) = "")  #20240919 add
     optional { ?mondo_id oboinowl:hasExactSynonym ?synonym } .
     optional { ?mondo_id owl:deprecated ?deprecated . }
     FILTER (!BOUND(?deprecated)) .
     
-    optional { ?disease rdfs:seeAlso ?mondo_id ;
-                        rdfs:label ?name_ja .            
-              FILTER (lang(?name_ja) = "ja") 
-             }
+    OPTIONAL { ?mondo_id rdfs:label ?name_ja FILTER (lang(?name_ja) = "ja") }  #20240919 add
+    
+    #optional { ?disease rdfs:seeAlso ?mondo_id ;	#20240919 del
+    #                    rdfs:label ?name_ja .		#20240919 del       
+    #          FILTER (lang(?name_ja) = "ja")		#20240919 del
+    #         }										#20240919 del
+    
     #FILTER (REGEX(?name_en, ?text, "i") ) .
     #FILTER (REGEX(?synonym, ?text, "i") ) .
     

@@ -7,7 +7,7 @@
 	* example: download
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql/
 
 ## `omim_id_list`
 ```javascript
@@ -97,11 +97,14 @@ WHERE {
       OPTIONAL { 
         ?mim_id nando:hasInheritance ?inheritance_en .
         ?mim_id nando:hasInheritance ?inheritance_ja .
-        ?inheritance_en rdfs:label ?inheritance_name_en .
+        #?inheritance_en rdfs:label ?inheritance_name_en .
+        GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp> {
+          ?inheritance_en rdfs:label ?inheritance_name_en . 
+        }
         ?inheritance_ja rdfs:label ?inheritance_name_ja .
         BIND (replace(str(?inheritance_en), 'http://purl.obolibrary.org/obo/HP_', 'HP:') AS ?inheritance_id_en)
         BIND (replace(str(?inheritance_ja), 'http://purl.obolibrary.org/obo/HP_', 'HP:') AS ?inheritance_id_ja)
-        FILTER (lang(?inheritance_name_en) = "en")
+        #FILTER (lang(?inheritance_name_en) = "en")
         FILTER (lang(?inheritance_name_ja) = "ja")
       }
 
@@ -111,10 +114,13 @@ WHERE {
       OPTIONAL { ?mim_id rdfs:seeAlso ?gtr  FILTER(CONTAINS(STR(?gtr), "gtr")) }
 
       #mondo id, disease name, description
-      OPTIONAL { ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
+      #OPTIONAL { ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
       OPTIONAL { ?mim_id rdfs:seeAlso ?mondo . BIND (replace(str(?mondo), 'http://purl.obolibrary.org/obo/MONDO_', 'https://monarchinitiative.org/disease/MONDO:') AS ?mondo_url) }
       
       ?mondo rdfs:label ?disease_name_en .
+      FILTER (lang(?disease_name_en) = "")
+      OPTIONAL { ?mondo rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
+      
       OPTIONAL { ?mondo <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_ID . }
       OPTIONAL { ?mondo obo:IAO_0000115 ?description . }
       
