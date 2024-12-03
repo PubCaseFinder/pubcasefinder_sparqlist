@@ -12,21 +12,17 @@ PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
 PREFIX oa: <http://www.w3.org/ns/oa#>
 PREFIX sio: <http://semanticscience.org/resource/>
 
-SELECT COUNT(DISTINCT ?ncbigene) as ?Genes
-
+SELECT COUNT(DISTINCT ?ncbi_gene_url) as ?Genes
 WHERE {
-  ?as sio:SIO_000628 ?disease ;
-      sio:SIO_000628 ?ncbigene .
-  ?disease rdf:type ncit:C7057 .
-  ?ncbigene rdf:type ncit:C16612 .
-  ?an rdf:type oa:Annotation ;
-        oa:hasTarget ?disease ;
-        oa:hasBody ?hpo_url ;
-        dcterms:source [dcterms:creator ?creator] .
-    #FILTER(CONTAINS(STR(?disease), "mim"))
-	#FILTER(CONTAINS(STR(?disease), "ORDO"))
-    FILTER(?creator NOT IN("Database Center for Life Science"))
-  
+  ?as rdf:type sio:SIO_000983 ;
+    sio:SIO_000628 ?ncbi_gene_url ;
+    sio:SIO_000628 ?disease_url .
+  ?ncbi_gene_url rdf:type ncit:C16612 ;
+    dcterms:identifier ?ncbi_gene_id ;
+    sio:SIO_000205 ?hgnc_gene_url .
+  ?disease_url rdf:type ncit:C7057 .
+  OPTIONAL { ?ncbi_gene_url dcterms:description ?full_name . }
+  ?hgnc_gene_url rdfs:label ?hgnc_gene_symbol . 
 }
 ```
 

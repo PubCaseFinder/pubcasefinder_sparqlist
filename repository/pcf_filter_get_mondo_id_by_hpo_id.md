@@ -41,7 +41,8 @@ WHERE {
       {{/if}}
 
   #VALUES ?hpo { {{hpo_id_list}} }
-    
+
+  ?hpo rdf:type owl:Class .
   ?hpo_url rdfs:subClassOf* ?hpo .
   ?anp rdf:type oa:Annotation ;
       oa:hasTarget ?disease_url ;

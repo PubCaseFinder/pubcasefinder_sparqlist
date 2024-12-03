@@ -106,60 +106,23 @@ WHERE {
 
 ## Output
 ```javascript
-({text_list, lang, result})=>{ 
-  var list = []
-  var dic = {}
-  var rows = result.results.bindings;
-  var count_name = 0
-  var count_synonym = 0
-
-  for (let i = 0; i < rows.length; i++) {
-    count_name = 0
-    count_synonym = 0
-    for (let j = 0; j < text_list.length; j++) {
-      if(lang.en) {
-        if (rows[i].name_en.value.toLowerCase().indexOf(text_list[j].toLowerCase()) != -1)
-          ++count_name
-      }
-      else if(lang.ja) {
-        if (rows[i].name_ja != null && 
-            rows[i].name_ja.value.toLowerCase().indexOf(text_list[j].toLowerCase()) != -1 ||
-            rows[i].name_en.value.toLowerCase().indexOf(text_list[j].toLowerCase()) != -1
-           )
-        {
-          ++count_name
-          //console.log(rows[i].name_ja.value + " input: " + text_list[j] + " count: " + count_name);
-        }
-      }
-      
-      //console.log(Object.keys(rows[i]).length);
-
-      //if(Object.keys(rows[i]).length == 3)
-      if(rows[i].synonym != null)
-      {
-        //console.log(Object.keys(rows[i]));
-        if (rows[i].synonym.value.toLowerCase().indexOf(text_list[j].toLowerCase()) != -1) 
-          ++count_synonym
-        //console.log(rows[i].mondo.value + " name : " + rows[i].name_en.value + " synonym : " + rows[i].synonym.value);
-      }
-    }
-    if(count_synonym == text_list.length && rows[i].synonym != null)
-    {
-      //console.log(rows[i].mondo.value + " name : " + rows[i].name_en.value + " synonym : " + rows[i].synonym.value);
-      list.push(rows[i].mondo.value);
-    }
-    if (count_name == text_list.length) // || (count_synonym == text_list.length && Object.keys(rows[i]).synonym != null))
-    {
-      //console.log(rows[i].mondo.value + " name : " + rows[i].name_en.value);
-      list.push(rows[i].mondo.value);
-    }
+({ text_list, lang, result }) => {
+  const rows = result.results.bindings
+  let list = []
+  const targetLanguagesKey = lang.en ? 'name_en' : 'name_ja'
+  const isMatch = (text_list, target_string) => {
+    return text_list.every(text => target_string.toLowerCase().includes(text.toLowerCase()));
   }
+  rows.forEach(row => {
+    if (
+      !list.includes(row.mondo?.value) &&
+      ((!!row[targetLanguagesKey] && isMatch(text_list, row[targetLanguagesKey].value)) ||
+        (!!row.synonym && isMatch(text_list, row.synonym.value)))
+    ) {
+      list.push(row.mondo.value)
+    }
+  })
 
-  if(rows){
-    //dic['MONDO:' + text_list] = list;
-    dic['input:' + text_list] = Array.from(new Set(list))
-  }
-  
-  return dic
+  return { ['input:' + text_list]: list }
 }
 ```

@@ -60,10 +60,11 @@ WHERE {
 ```javascript
 ({result})=>{ 
   return result.results.bindings.map(data => {
-    return Object.keys(data).reduce((obj, key) => {
-      obj[key] = data[key].value;
-      return obj;
-    }, {});
+    let obj = {}
+    Object.entries(data).forEach(([k,v]) => {
+      obj[k] = v.value
+    })
+    return obj
   });
 }
 ```
