@@ -107,8 +107,8 @@ cat tmp/repository/pcf_get_omim_data_by_omim_id.md.diff
 ### 3. md ファイルを指定してリリース実行
 リリースしたい md ファイルを指定して 開発環境のコードをコピーして本番環境にリリースできる。  
 リリースの際に、開発用 SARQL エンドポイントは 本番環境用の置換される。  
-修正前: https://dev-nanbyodata.dbcls.jp/sparql  
-修正後: https://nanbyodata.jp/sparql
+修正前: https://dev-pubcasefinder.dbcls.jp/sparql  
+修正後: https://pubcasefinder.dbcls.jp/sparql
 
 ```
 sh bin/release_product_from_dev.sh pcf_get_omim_data_by_omim_id.md
