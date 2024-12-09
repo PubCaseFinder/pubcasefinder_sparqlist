@@ -1,11 +1,11 @@
-# [PCF] FILTER: GET OMIM ID by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET OMIM ID by NANDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `nando_id` NANDO ID
   * default: 1200295 
   * examples: 1000001, 2000001, 1200003
   
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `nando_id_list`
 ```javascript
