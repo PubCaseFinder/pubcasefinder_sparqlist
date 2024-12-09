@@ -1,11 +1,11 @@
-# [PCF] FILTER: GET ORPHA IDs by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET ORPHA IDs by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0009903
   * example: 0007943, 0007318, 0010408, 0008715, 0008931, 0019880, 0016044, 0009901, 008112
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `mondo_id_list`
 ```javascript

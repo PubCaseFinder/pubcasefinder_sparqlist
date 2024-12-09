@@ -5,7 +5,7 @@
   * example: 1723, 9723, 55636, 157570, 10262, 2260, 4038, 5144, 9469, 324
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `ncbi_gene_id_list`
 ```javascript

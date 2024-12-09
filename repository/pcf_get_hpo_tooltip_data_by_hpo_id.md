@@ -1,11 +1,11 @@
-# [PCF] Get HPO tooltip data by HPO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get HPO tooltip data by HPO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `hpo_id` HPO ID
   * default: 0000347
   * example: 0410219, 0031815, 0040184
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `hpo_id_list`
 ```javascript

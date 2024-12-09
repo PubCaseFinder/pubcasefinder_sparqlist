@@ -1,4 +1,4 @@
-# [PCF] Get OMIM data by OMIM ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get OMIM data by OMIM ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `omim_id` OMIM ID (複数のIDを入力可能)
   * default: 117600
@@ -7,7 +7,7 @@
 	* example: download
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `omim_id_list`
 ```javascript

@@ -1,11 +1,11 @@
-# [PCF] Get HPO data by ORPHA ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get HPO data by ORPHA ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `orpha_id` ORPHA ID
   * default: 245
   * example: 245, 52, 140952, 1784
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `orpha_id_list`
 ```javascript

@@ -1,11 +1,11 @@
-# FILTER: Get MONDO ID by HPO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# FILTER: Get MONDO ID by HPO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `hpo_id` HPO ID
   * default: 0000347, 0003022
   * example: 0001428, 0003745
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `hpo_id_list`
 ```javascript

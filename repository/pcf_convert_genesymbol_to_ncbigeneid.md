@@ -5,7 +5,7 @@
   * example: POLG SLC7A7 CBS
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `hgnc_gene_symbol_list`
 ```javascript

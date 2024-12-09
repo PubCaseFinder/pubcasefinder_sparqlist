@@ -1,11 +1,11 @@
-# [PCF] FILTER: GET GENE IDs by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET GENE IDs by NANDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `nando_id` NANDO ID
   * default: 2100004
   * examples: 1200009, 2200865
   
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `nando_id_list`
 ```javascript

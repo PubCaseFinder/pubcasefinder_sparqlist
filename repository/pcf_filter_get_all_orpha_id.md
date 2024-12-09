@@ -1,6 +1,6 @@
-# [PCF] FILTER: GET All ORPHA IDs - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET All ORPHA IDs - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `all_orpha_id` 
 ```sparql

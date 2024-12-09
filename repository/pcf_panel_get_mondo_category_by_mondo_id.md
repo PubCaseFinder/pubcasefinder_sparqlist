@@ -1,11 +1,11 @@
-# [PCF] Get MONDO category data by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get MONDO category data by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0020583
   * example: 0003847, 0018096, 0007477, 0001046
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `mondo_id_list`
 ```javascript

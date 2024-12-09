@@ -1,4 +1,4 @@
-# [PCF] Get MONDO ID by GENE SYMBOL or GENE SYMBOL SYNONYM or NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get MONDO ID by GENE SYMBOL or GENE SYMBOL SYNONYM or NCBI GENE ID - https://dev-pubcasefinder.dbcls.jp/sparql
 pcf_panel_get_mondo_id_match_gene_symbol_synonym_ncbiid
 ## Parameters
 * `input_text` Text
@@ -6,7 +6,7 @@ pcf_panel_get_mondo_id_match_gene_symbol_synonym_ncbiid
   * example: SF3B4 CERS3 DHOdehase AFD1 170691
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `text_list`
 ```javascript

@@ -1,11 +1,11 @@
-# FILTER: Get GENE ID by HPO ID (inheritance) - https://pubcasefinder-rdf.dbcls.jp/sparql
+# FILTER: Get GENE ID by HPO ID (inheritance) - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `hpo_id` HPO ID
   * default: 0001470
   * example: 0001428, 0003745
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `hpo_id_list`
 ```javascript

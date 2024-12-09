@@ -1,11 +1,11 @@
-# FILTER: GET ORPHA IDs by multi NCBI gene ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# FILTER: GET ORPHA IDs by multi NCBI gene ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `ncbi_gene_id` NCBI gene ID
   * default: 57514 6521
   * example: 10771, 583, 6696
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `ncbi_gene_id_list`
 ```javascript

@@ -1,4 +1,4 @@
-# [PCF] Get MONDO ID by PANEL NAME or SYNONYM - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get MONDO ID by PANEL NAME or SYNONYM - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `input_text` Text
   * default: cell small
@@ -8,7 +8,7 @@
 	* example: ja
     
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `text_list`
 ```javascript

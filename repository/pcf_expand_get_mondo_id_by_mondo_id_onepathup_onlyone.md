@@ -1,11 +1,11 @@
-# [PCF] EXPAND: one path up only one - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] EXPAND: one path up only one - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0020341
   * example: 0018096, 0003847, 0018096, 0007477
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `mondo_id_list`
 ```javascript

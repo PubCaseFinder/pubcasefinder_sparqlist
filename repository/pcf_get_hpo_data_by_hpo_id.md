@@ -1,11 +1,11 @@
-# [PCF] Get HPO data by HPO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get HPO data by HPO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `hpo_id` HPO ID
   * default: HP:0000347, 0003022, HP:0009381, 0000204, 0000625
   * example: 0410219, 0031815, 0040184
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `hpo_id_list`
 ```javascript

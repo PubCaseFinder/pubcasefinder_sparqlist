@@ -1,4 +1,4 @@
-# [PCF] Get ORPHA data by ORPHA ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get ORPHA data by ORPHA ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `orpha_id` ORPHA ID (複数のIDを入力可能)
   * default: 245, 52, 140952, 1784
@@ -7,7 +7,7 @@
 	* example: download
     
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `orpha_id_list`
 ```javascript

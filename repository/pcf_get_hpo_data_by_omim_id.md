@@ -1,11 +1,11 @@
-# [PCF] Get HPO data by OMIM ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get HPO data by OMIM ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `omim_id` OMIM ID
   * default: 607341
   * example: 263750, 612158, 154400, 214800, 105650
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `omim_id_list`
 ```javascript

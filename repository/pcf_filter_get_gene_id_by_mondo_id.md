@@ -1,11 +1,11 @@
-# [PCF] FILTER: GET GENE IDs by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET GENE IDs by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0018096
   * example: 0003847, 0018096, 0007477
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `mondo_id_list`
 ```javascript

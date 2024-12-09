@@ -1,7 +1,7 @@
-# [PCF] Statistics_Genetic_Diseases - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Statistics_Genetic_Diseases - https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `result` 
 ```sparql

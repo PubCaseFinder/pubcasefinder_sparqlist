@@ -1,4 +1,4 @@
-# [PCF] Get GENE data by NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get GENE data by NCBI GENE ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `ncbi_gene_id` NCBI GENE ID (複数のIDを入力可能)
   * default: GENEID:1723, GENEID:9723, GENEID:4038
@@ -7,7 +7,7 @@
 	* example: download
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `ncbi_gene_id_list`
 ```javascript
