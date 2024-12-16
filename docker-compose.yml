@@ -1,4 +1,3 @@
-version: '3'
 services:
   sparqlist:
     container_name: ${CONTAINER_NAME:-pubcasefinder-sparqlist}
