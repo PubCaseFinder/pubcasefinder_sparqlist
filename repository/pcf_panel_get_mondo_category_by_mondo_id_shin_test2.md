@@ -52,13 +52,14 @@ WHERE {
 ```
 ## Output
 ```javascript
-({result})=>{ 
+({result})=>
+{ 
   var dic = {}
   var rows = result.results.bindings;
-  
+
   for (let i = 0; i < rows.length; i++) {
-    if (rows[i].root_name.value in dic
+    if (rows[i].root_name.value in dic)
+      return result.results.bindings.map(row => [row.parent_name.value, row.child_name.value].join("\t") )
   }
-  return result.results.bindings.map(row => [row.parent_name.value, row.child_name.value].join("\t") )
 }
 ```

@@ -29,13 +29,31 @@ PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
 SELECT 
 ?ncbi_gene_id
 ?hgnc_gene_symbol
+"Definitive" AS ?rating
+"指定難病の遺伝学的検査に関するガイドライン" AS ?source
+?nando_ja
+?nando_en
+#?nando_label_ja
+#?nando_label_en
+#?nando_id
+
 WHERE {
-  ?an sio:SIO_000628 nando:{{nando_id_list}} ;
+  VALUES ?nando { nando:{{nando_id_list}} }
+  ?an sio:SIO_000628 ?nando ;
       sio:SIO_000628 ?ncbi_gene_url .
+      #dcterms:source ?source .
   ?ncbi_gene_url rdf:type ncit:C16612 ;
                  dcterms:identifier ?ncbi_gene_id ;
                  sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
+  ?nando rdfs:label ?nando_label_ja ;
+         rdfs:label ?nando_label_en ;
+         dcterms:identifier ?nando_id .
+  FILTER(lang(?nando_label_ja) = "ja")
+  FILTER(lang(?nando_label_en) = "en")
+  BIND(CONCAT(?nando_label_ja, ", ", ?nando_id) AS ?nando_ja)
+  BIND(CONCAT(?nando_label_en, ", ", ?nando_id) AS ?nando_en)
 }
+order by ?hgnc_gene_symbol
 ```
 
 ## Output

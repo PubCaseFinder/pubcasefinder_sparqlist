@@ -1,4 +1,4 @@
-# [PCF] FILTER: GET OMIM IDs by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
+# [PCF] FILTER: GET OMIM IDs by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0018096
@@ -11,6 +11,7 @@ https://dev-pubcasefinder.dbcls.jp/sparql
 ```javascript
 ({mondo_id}) => {
   mondo_id = mondo_id.replace(/MONDO:/g,"")
+  mondo_id = 'mondo:MONDO_' + mondo_id.replace(/[\s,]+/g," mondo:MONDO_")
   return mondo_id;
 }
 ```
@@ -26,8 +27,13 @@ SELECT DISTINCT
 ?omim_id
 
 WHERE {
-  mondo:MONDO_{{mondo_id_list}} <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
-  ?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
+  VALUES ?mondo_list { {{mondo_id_list}} }
+  
+  #mondo:MONDO_{{mondo_id_list}} <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
+  ?mondo_list <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_id .
+  
+  #?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
+  ?mondo_sub_tier rdfs:subClassOf* ?mondo_list ;
                   skos:exactMatch ?mim_uri .
   FILTER(CONTAINS(STR(?mim_uri), "mim"))
   BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
@@ -54,7 +60,8 @@ WHERE {
   }
 
   if(rows){
-    dic['MONDO:' + mondo_id_list] = list;
+    //dic['MONDO:' + mondo_id_list] = list;
+    dic[mondo_id_list.replace(/mondo:MONDO_/gi,'MONDO:').replace(/ /gi,'|')] = list;
   }
   
   return dic

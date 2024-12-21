@@ -1,4 +1,4 @@
-# [PCF] Get Disease tooltip data by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
+# [PCF] Get Disease tooltip data by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0009903
@@ -40,12 +40,15 @@ WHERE {
   VALUES ?mondo_url { mondo:MONDO_{{mondo_id_list}} }
 
   ?mondo_url rdfs:label ?name_en .
+  FILTER (lang(?name_en) = "")
+  OPTIONAL { ?mondo_url rdfs:label ?name_ja FILTER (lang(?name_ja) = "ja") }  # add 20241008
   optional { ?mondo_url mondo:IAO_0000115 ?definition }
   optional { ?mondo_url <http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> ?synonym }
 
-  optional { ?disease rdfs:seeAlso ?mondo_url ;
-                      rdfs:label ?name_ja .            
-            FILTER (lang(?name_ja) = "ja") }
+# del 20241008
+#  optional { ?disease rdfs:seeAlso ?mondo_url ;
+#                      rdfs:label ?name_ja .            
+#            FILTER (lang(?name_ja) = "ja") }
   
   optional { ?omim_url rdfs:seeAlso ?mondo_url ;
                        dcterms:identifier ?omim_id .

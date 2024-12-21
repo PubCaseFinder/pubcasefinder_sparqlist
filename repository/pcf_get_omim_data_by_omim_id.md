@@ -1,8 +1,8 @@
-# [PCF] Get OMIM data by OMIM ID - https://dev-pubcasefinder.dbcls.jp/sparql
+# [PCF] Get OMIM data by OMIM ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `omim_id` OMIM ID (複数のIDを入力可能)
-  * default: 117600
-  * example: OMIM:181500,OMIM:214800,OMIM:263750,OMIM:219000, 263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 230400, 182280263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 613172, 613174, 609909, 145250, 146580, 613177, 613179, 184850, 205400, 601195 
+  * default: OMIM:181500,OMIM:214800,OMIM:263750,OMIM:219000
+  * example: 263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 230400, 182280263750, 154400, 214800, 105650, 609945, 219000, 143095, 615162, 122470, 115470, 613172, 613174, 609909, 145250, 146580, 613177, 613179, 184850, 205400, 601195 
 * `mode` (パラメータに"download"を入力すると全件取得可能)
 	* example: download
 
@@ -32,7 +32,6 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX sio: <http://semanticscience.org/resource/>
 PREFIX owl: <http://www.geneontology.org/formats/oboInOwl#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX oboInowl: <http://www.geneontology.org/formats/oboInOwl#>
 
 SELECT DISTINCT
 str(?disease_name_en) as ?omim_disease_name_en
@@ -47,7 +46,7 @@ CONCAT('OMIM:', STR(?omim_id)) as ?omim_id
 str(?mim_id) as ?omim_url
 str(?mondo_ID) as ?mondo_id
 ?mondo_url
-str(?DBMS) as ?ur_dbms_url
+#str(?DBMS) as ?ur_dbms_url
 str(?kegg) as ?kegg_url
 str(?gene_reviews) as ?gene_reviews_url
 str(?gtr) as ?gtr_url
@@ -69,7 +68,7 @@ WHERE {
             oa:hasBody ?hpo ;
             dcterms:source [dcterms:creator ?creator] .
         FILTER(CONTAINS(STR(?mim_id), "mim"))
-#        FILTER(?creator NOT IN("Database Center for Life Science"))
+        FILTER(?creator NOT IN("Database Center for Life Science"))
         GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
           ?hpo rdfs:subClassOf+ ?hpo_category .
           ?hpo_category rdfs:subClassOf obo:HP_0000118 .
@@ -86,7 +85,7 @@ WHERE {
               oa:hasBody ?hpo ;
               dcterms:source [dcterms:creator ?creator] .
           FILTER(CONTAINS(STR(?mim_id), "mim"))
-#          FILTER(?creator NOT IN("Database Center for Life Science"))
+          FILTER(?creator NOT IN("Database Center for Life Science"))
           GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
             ?hpo rdfs:subClassOf+ ?hpo_category .
             ?hpo_category rdfs:subClassOf obo:HP_0000118 .

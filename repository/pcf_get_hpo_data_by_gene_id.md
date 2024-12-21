@@ -1,4 +1,4 @@
-# [PCF] Get HPO data by GENE ID - https://dev-pubcasefinder.dbcls.jp/sparql
+# [PCF] Get HPO data by GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `ncbi_gene_id` NCBI gene ID
   * default: 57514
@@ -45,7 +45,7 @@ WHERE {
         oa:hasTarget ?disease_url ;
         oa:hasBody ?hpo_url ;
         dcterms:source [dcterms:creator ?creator] .
-  	FILTER(CONTAINS(STR(?disease_url), "mim"))
+  	#FILTER(CONTAINS(STR(?disease_url), "mim"))
   	#FILTER(CONTAINS(STR(?disease), "Orphanet"))	
   	?disease_url dcterms:identifier ?disease_id .  
     FILTER(?creator NOT IN("Database Center for Life Science"))

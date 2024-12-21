@@ -44,13 +44,16 @@ WHERE {
     SELECT DISTINCT ?disease WHERE {
       VALUES ?nando { {{#each nando_id_list}} nando:{{this}} {{/each}} }
       ?nando a owl:Class .
-      ?nando skos:closeMatch|skos:exactMatch ?mondo .
+      #?nando skos:closeMatch|skos:exactMatch ?mondo .
+      ?nando skos:exactMatch ?mondo .
       ?mondo oboinowl:id ?mondo_id .
       #?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
       ?mondo_sub_tier rdfs:subClassOf* ?mondo ;
                       skos:exactMatch ?exactMatch_disease .
       FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-      BIND(IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
+      #BIND(IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
+      BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+      # 위의 BIND 부분은 OMIM의 주소가 변경된 문제로 최신 RDF로 변환 하면 삭제 해도 되는 부분
     }
   }
   ?as sio:SIO_000628 ?disease ;
