@@ -53,7 +53,8 @@ WHERE {
     VALUES ?mondo { {{#each mondo_id_list}} mondo:MONDO_{{this}} {{/each}} }
       {{/if}}
       
-      ?mondo sio:SIO_001112 ?count .
+      OPTIONAL { ?mondo sio:SIO_001112 ?count }
+      
       #---------- gene count start
 #      {
 #        SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE {
