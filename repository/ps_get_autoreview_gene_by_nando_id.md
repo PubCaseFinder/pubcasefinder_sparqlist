@@ -35,23 +35,25 @@ SELECT
 ?hgnc_gene_symbol
 ?rating
 CONCAT(?submitter, " (GenCC)") AS ?source
+?gencc_url
 ?mondo_ja
 ?mondo_en
 #CONCAT(?mondo_en, ", ", ?disease) AS ?disease
 ?nando_ja
 ?nando_en
+?nando_id
 WHERE {
   {
-    SELECT DISTINCT ?exactMatch_disease ?mondo_ja ?mondo_en ?nando_ja ?nando_en WHERE {
+    SELECT DISTINCT ?exactMatch_disease ?mondo_ja ?mondo_en ?nando_ja ?nando_en ?nando_id WHERE {
       VALUES ?nando { nando:{{nando_id_list}} }
       ?nando a owl:Class ;
-             rdfs:label ?nando_label_ja ;
-             rdfs:label ?nando_label_en ;
+             rdfs:label ?nando_ja ;
+             rdfs:label ?nando_en ;
              dcterms:identifier ?nando_id .
-      FILTER(lang(?nando_label_ja) = "ja")
-      FILTER(lang(?nando_label_en) = "en")
-      BIND(CONCAT(?nando_label_ja, ", ", ?nando_id) AS ?nando_ja)
-      BIND(CONCAT(?nando_label_en, ", ", ?nando_id) AS ?nando_en)
+      FILTER(lang(?nando_ja) = "ja")
+      FILTER(lang(?nando_en) = "en")
+      #BIND(CONCAT(?nando_ja, ", ", ?nando_id) AS ?nando_ja)
+      #BIND(CONCAT(?nando_en, ", ", ?nando_id) AS ?nando_en)
       
       ?nando skos:exactMatch ?mondo .
       ?mondo rdfs:label ?mondo_en ;
@@ -67,11 +69,15 @@ WHERE {
   }
   ?as sio:SIO_000628 ?exactMatch_disease ;
       sio:SIO_000628 ?gene ;
-      dcterms:source [      
-        obo:IAO_0000114 ?rating ;
-        :hasInheritance ?moi ;
-        dcterms:creator ?submitter ;
-      ] .
+      dcterms:source ?gencc_url .
+#      dcterms:source [      
+#        obo:IAO_0000114 ?rating ;
+#        :hasInheritance ?moi ;
+#        dcterms:creator ?submitter ;
+#      ] .
+  ?gencc_url obo:IAO_0000114 ?rating ;
+             :hasInheritance ?moi ;
+             dcterms:creator ?submitter .
   #?exactMatch_disease rdf:type ncit:C7057 .
   ?gene rdf:type ncit:C16612 ;
         dcterms:identifier ?ncbi_gene_id ;

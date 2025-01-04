@@ -31,12 +31,12 @@ SELECT
 ?hgnc_gene_symbol
 "Definitive" AS ?rating
 "指定難病の遺伝学的検査に関するガイドライン" AS ?source
+"https://jshg.jp/wp-content/uploads/2024/03/a02edeee573e7797da6a821a5bc48026.pdf" AS ?source_url
 ?nando_ja
 ?nando_en
 #?nando_label_ja
 #?nando_label_en
-#?nando_id
-
+?nando_id
 WHERE {
   VALUES ?nando { nando:{{nando_id_list}} }
   ?an sio:SIO_000628 ?nando ;
@@ -45,13 +45,13 @@ WHERE {
   ?ncbi_gene_url rdf:type ncit:C16612 ;
                  dcterms:identifier ?ncbi_gene_id ;
                  sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
-  ?nando rdfs:label ?nando_label_ja ;
-         rdfs:label ?nando_label_en ;
+  ?nando rdfs:label ?nando_ja ;
+         rdfs:label ?nando_en ;
          dcterms:identifier ?nando_id .
-  FILTER(lang(?nando_label_ja) = "ja")
-  FILTER(lang(?nando_label_en) = "en")
-  BIND(CONCAT(?nando_label_ja, ", ", ?nando_id) AS ?nando_ja)
-  BIND(CONCAT(?nando_label_en, ", ", ?nando_id) AS ?nando_en)
+  FILTER(lang(?nando_ja) = "ja")
+  FILTER(lang(?nando_en) = "en")
+  #BIND(CONCAT(?nando_ja, ", ", ?nando_id) AS ?nando_ja)
+  #BIND(CONCAT(?nando_en, ", ", ?nando_id) AS ?nando_en)
 }
 order by ?hgnc_gene_symbol
 ```
