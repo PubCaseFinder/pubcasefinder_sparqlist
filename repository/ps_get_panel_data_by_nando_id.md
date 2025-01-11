@@ -141,26 +141,42 @@ WHERE {
   }
   
   OPTIONAL {
-    ?nando skos:exactMatch ?mondo .
+    #?nando skos:exactMatch ?mondo .
     {
-      SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE 
-      {
+      SELECT ?nando COUNT(DISTINCT ?gene) as ?count WHERE {
         {
-          SELECT DISTINCT ?mondo ?disease WHERE { 
-            ?mondo_sub_tier rdfs:subClassOf* ?mondo ;
-                            skos:exactMatch ?exactMatch_disease .
-
-            FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-            #BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
-            BIND (IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+          OPTIONAL {
+            VALUES ?nando { {{#each nando_id_list}} nando:{{this}} {{/each}} }
+              ?as sio:SIO_000628 ?nando ;
+                  sio:SIO_000628 ?gene .
+              ?nando a owl:Class .
+              ?gene rdf:type ncit:C16612 .
           }
         }
-        ?as sio:SIO_000628 ?disease ;
-            sio:SIO_000628 ?gene .
-        ?disease rdf:type ncit:C7057 .
-        ?gene rdf:type ncit:C16612 ;
-              dcterms:identifier ?gene_id .
-      } 
+        UNION
+        {
+          {
+            SELECT DISTINCT ?nando ?disease WHERE { 
+              ?nando_sub_tier nando:memberOf | rdfs:subClassOf* ?nando .
+              ?nando_sub_tier skos:exactMatch ?mondo_exactMatch .
+              ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
+              ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
+
+              #?mondo_sub_tier rdfs:subClassOf* ?mondo ;
+              #                skos:exactMatch ?exactMatch_disease .
+
+              FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+              #BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
+              BIND (IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+            }
+          }
+          ?as sio:SIO_000628 ?disease ;
+              sio:SIO_000628 ?gene .
+          ?disease rdf:type ncit:C7057 .
+          ?gene rdf:type ncit:C16612 ;
+                dcterms:identifier ?gene_id .
+        }
+      }
     }
   }
 }

@@ -34,7 +34,7 @@ SELECT DISTINCT
 ?ncbi_gene_id
 ?hgnc_gene_symbol
 ?rating
-?source
+CONCAT(?submitter, " (GenCC)") AS ?source
 ?gencc_url
 ?nando_ja ?nando_en ?nando_id
 ?mondo_ja
@@ -46,6 +46,7 @@ WHERE {
   {
     SELECT DISTINCT ?mondo_sub_tier ?nando_sub_tier WHERE {
       VALUES ?nando_input { nando:{{nando_id_list}} }
+      
       optional {?nando_sub_tier nando:memberOf | rdfs:subClassOf* ?nando_input . }
       ?nando_sub_tier skos:exactMatch ?mondo_exactMatch .
       ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
@@ -75,7 +76,7 @@ WHERE {
   #association
   ?as sio:SIO_000628 ?exactMatch_disease ;
       sio:SIO_000628 ?gene ;
-      dcterms:source ?source_url .
+      dcterms:source ?gencc_url .
 
   #?exactMatch_disease rdf:type ncit:C7057 . omim이 완벽하지 못하여 생기는 문제
   #gene info
@@ -83,24 +84,17 @@ WHERE {
         dcterms:identifier ?ncbi_gene_id ;
         sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
   
-  OPTIONAL {
-    #GenCC source
-    ?source_url obo:IAO_0000114 ?gencc_rating ;
-               :hasInheritance ?moi ;
-               dcterms:creator ?submitter .
+  #GenCC source
+  ?gencc_url obo:IAO_0000114 ?rating ;
+             :hasInheritance ?moi ;
+             dcterms:creator ?submitter .
 
-    #mode of inheritance
-    ?moi rdfs:label ?moi_en ;
-         rdfs:label ?moi_ja .
-    FILTER (lang(?moi_en) = "") .
-    FILTER (lang(?moi_ja) = "ja") .
-  }
-  BIND(IF(STR(?source_url) = 'http://www.orphadata.org/data/xml/en_product6.xml', ?exactMatch_disease,
-            IF(STR(?source_url) = 'ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen', ?exactMatch_disease, ?source_url)) AS ?gencc_url)
-  BIND(IF(STR(?source_url) = 'http://www.orphadata.org/data/xml/en_product6.xml', 'Orphadata',
-            IF(STR(?source_url) = 'ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen', 'OMIM', CONCAT(?submitter, " (GenCC)"))) AS ?source)
-  BIND(IF(STR(?source_url) = 'http://www.orphadata.org/data/xml/en_product6.xml', 'Supportive',
-            IF(STR(?source_url) = 'ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen', 'Supportive', ?gencc_rating)) AS ?rating)
+  #mode of inheritance
+  ?moi rdfs:label ?moi_en ;
+       rdfs:label ?moi_ja .
+  FILTER (lang(?moi_en) = "") .
+  FILTER (lang(?moi_ja) = "ja") .
+
 }
 order by ?hgnc_gene_symbol
 ```
