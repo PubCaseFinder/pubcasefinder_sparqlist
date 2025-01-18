@@ -29,7 +29,7 @@ WHERE {
   VALUES ?nando_id { {{nando_id_list}} }
   ?nando_id a owl:Class .
   ?nando_sub_tier rdfs:subClassOf* ?nando_id ;
-                  skos:closeMatch ?mondo .
+                  skos:exactMatch ?mondo .
   ?mondo skos:exactMatch ?orpha_url .
   FILTER(CONTAINS(STR(?orpha_url), "Orphanet_"))  
   BIND (replace(str(?orpha_url), 'http://www.orpha.net/ORDO/Orphanet_', '') AS ?orpha_id)

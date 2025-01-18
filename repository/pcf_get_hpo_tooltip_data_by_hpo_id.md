@@ -35,7 +35,7 @@ WHERE {
   VALUES ?hp_id { obo:HP_{{hpo_id_list}} }
 
   GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
-    optional { ?hp_id rdfs:label ?name_en . }
+    optional { ?hp_id rdfs:label ?name_en . FILTER (lang(?name_en) = "") .}
     optional { ?hp_id obo:IAO_0000115 ?definition . }
     optional { ?hp_id <http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> ?synonym . }
     optional { ?hp_id rdfs:comment ?comment . }

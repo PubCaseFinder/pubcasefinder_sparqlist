@@ -29,7 +29,7 @@ WHERE {
   VALUES ?nando_id { {{nando_id_list}} }
   ?nando_id a owl:Class .
   ?nando_sub_tier rdfs:subClassOf* ?nando_id ;
-                  skos:closeMatch ?mondo .
+                  skos:exactMatch ?mondo .
   ?mondo skos:exactMatch ?mim_uri .
   # 20241224 change
   #FILTER(CONTAINS(STR(?mim_uri), "mim"))

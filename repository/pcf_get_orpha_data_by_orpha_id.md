@@ -132,7 +132,7 @@ WHERE {
       #nando url
       OPTIONAL {
         GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/nando>{
-          ?nando_url skos:closeMatch ?mondo.
+          ?nando_url skos:exactMatch ?mondo.
         }
       }
       
