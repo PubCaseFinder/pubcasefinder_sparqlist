@@ -29,10 +29,12 @@ WHERE {
   VALUES ?nando_id { {{nando_id_list}} }
   ?nando_id a owl:Class .
   ?nando_sub_tier rdfs:subClassOf* ?nando_id ;
-                  skos:closeMatch ?mondo .
+                  skos:exactMatch ?mondo .
   ?mondo skos:exactMatch ?mim_uri .
   FILTER(CONTAINS(STR(?mim_uri), "mim"))
-  BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
+  # 20241224 change
+  #BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
+  BIND (replace(replace(str(?mim_uri), 'https://omim.org/entry/', ''), 'http://identifiers.org/omim/', '') AS ?omim_id)
 }
 ```
 

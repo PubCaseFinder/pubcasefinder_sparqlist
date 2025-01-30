@@ -5,7 +5,7 @@
   * example: 0009903, 0003847, 0018096, 0007477
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `mondo_id_list`
 ```javascript
@@ -53,7 +53,8 @@ WHERE {
     VALUES ?mondo { {{#each mondo_id_list}} mondo:MONDO_{{this}} {{/each}} }
       {{/if}}
       
-      ?mondo sio:SIO_001112 ?count .
+      OPTIONAL { ?mondo sio:SIO_001112 ?count }
+      
       #---------- gene count start
 #      {
 #        SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE {

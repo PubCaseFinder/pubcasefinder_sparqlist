@@ -36,15 +36,9 @@ WHERE {
   ?mondo_sub_tier rdfs:subClassOf* ?mondo_list ;
                   skos:exactMatch ?mim_uri .
   FILTER(CONTAINS(STR(?mim_uri), "mim"))
-  BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
-  
-  #mondo 갱신으로 임시 소스
-  #FILTER(CONTAINS(STR(?mim_uri), "entry"))
-  #BIND (replace(str(?mim_uri), 'https://omim.org/entry/', '') AS ?omim_id)
-  
-  #mondo 갱신으로 인한 잠시 주석화
-  #FILTER(CONTAINS(STR(?mim_id), "OMIM_"))
-  #BIND (replace(str(?mim_id), 'http://purl.obolibrary.org/obo/OMIM_', '') AS ?omim_id)
+  # 20241224 change
+  #BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
+  BIND (replace(replace(str(?mim_uri), 'https://omim.org/entry/', ''), 'http://identifiers.org/omim/', '') AS ?omim_id)
 }
 ```
 
