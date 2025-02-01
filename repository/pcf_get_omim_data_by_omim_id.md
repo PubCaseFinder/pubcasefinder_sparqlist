@@ -78,20 +78,22 @@ WHERE {
   {{else}}
     {{#if omim_id_list}}
       VALUES ?mim_id { {{omim_id_list}} }
-      {
-        SELECT DISTINCT ?mim_id count(DISTINCT ?hpo) as ?hpo WHERE {
-          ?an rdf:type oa:Annotation ;
-              oa:hasTarget ?mim_id ;
-              oa:hasBody ?hpo ;
-              dcterms:source [dcterms:creator ?creator] .
-          FILTER(CONTAINS(STR(?mim_id), "mim"))
-          FILTER(?creator NOT IN("Database Center for Life Science"))
-          GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
-            ?hpo rdfs:subClassOf+ ?hpo_category .
-            ?hpo_category rdfs:subClassOf obo:HP_0000118 .
+      OPTIONAL { 
+        {
+          SELECT DISTINCT ?mim_id count(DISTINCT ?hpo) as ?hpo WHERE {
+            ?an rdf:type oa:Annotation ;
+                oa:hasTarget ?mim_id ;
+                oa:hasBody ?hpo ;
+                dcterms:source [dcterms:creator ?creator] .
+            FILTER(CONTAINS(STR(?mim_id), "mim"))
+            FILTER(?creator NOT IN("Database Center for Life Science"))
+            GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+              ?hpo rdfs:subClassOf+ ?hpo_category .
+              ?hpo_category rdfs:subClassOf obo:HP_0000118 .
+            }
           }
         }
-       }
+      }
     {{/if}}
   {{/if}}
       OPTIONAL { 
