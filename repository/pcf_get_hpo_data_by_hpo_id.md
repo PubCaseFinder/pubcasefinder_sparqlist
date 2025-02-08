@@ -31,11 +31,19 @@ str(?name_ja) as ?name_ja
 WHERE { 
   VALUES ?hp_id { {{hpo_id_list}} }
 
-  GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
-    ?hp_id rdfs:label ?name_en .
+# add start 20250204
+  OPTIONAL {
+    ?hp_id rdfs:label ?name_en, ?name_ja . 
+    FILTER (lang(?name_en) = "") .
+    FILTER (lang(?name_ja) = "ja") .
   }
-
-  optional { ?hp_id rdfs:label ?name_ja . FILTER (lang(?name_ja) = "ja") }
+# add end 20250204
+  
+# del 20250204
+#  GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+#    ?hp_id rdfs:label ?name_en .
+#  }
+#  optional { ?hp_id rdfs:label ?name_ja . FILTER (lang(?name_ja) = "ja") }
   BIND (replace(str(?hp_id), 'http://purl.obolibrary.org/obo/HP_', '') AS ?hp )
 }
 ```

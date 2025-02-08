@@ -34,28 +34,40 @@ str(?hpo_label_ja) as ?hpo_label_ja
 str(?definition) as ?definition
 
 WHERE { 
-    VALUES ?mim_id { mim:{{omim_id_list}} }
+  VALUES ?mim_id { mim:{{omim_id_list}} }
 
-    ?an rdf:type oa:Annotation ;
-        oa:hasTarget ?mim_id ;
-        oa:hasBody ?hpo_url ;
-        dcterms:source [dcterms:creator ?creator] .
-    FILTER(CONTAINS(STR(?mim_id), "mim"))
-    FILTER(?creator NOT IN("Database Center for Life Science"))
+  ?an rdf:type oa:Annotation ;
+      oa:hasTarget ?mim_id ;
+      oa:hasBody ?hpo_url ;
+      dcterms:source [dcterms:creator ?creator] .
+  FILTER(CONTAINS(STR(?mim_id), "mim"))
+  FILTER(?creator NOT IN("Database Center for Life Science"))
 
-    GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
-      ?hpo_url rdfs:label ?hpo_label_en .
-      #?hpo_url <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id .
-      BIND (replace(str(?hpo_url), 'http://purl.obolibrary.org/obo/HP_', 'HP:') AS ?hpo_id)
-      optional { ?hpo_url obo:IAO_0000115 ?definition . }
-      ?hpo_url rdfs:subClassOf+ ?hpo_category .
-      ?hpo_category rdfs:subClassOf obo:HP_0000118 .   
-      ?hpo_category rdfs:label ?hpo_category_name_en .
-    }
+# add start 20250204
+  ?hpo_url rdfs:label ?hpo_label_en . FILTER (lang(?hpo_label_en) = "")
+  BIND (replace(str(?hpo_url), 'http://purl.obolibrary.org/obo/HP_', 'HP:') AS ?hpo_id)
+  ?hpo_url rdfs:subClassOf+ ?hpo_category .
+  ?hpo_category rdfs:subClassOf obo:HP_0000118 .   
+  ?hpo_category rdfs:label ?hpo_category_name_en . FILTER (lang(?hpo_category_name_en) = "")
 
-    optional { ?hpo_category rdfs:label ?hpo_category_name_ja . FILTER (lang(?hpo_category_name_ja) = "ja") }
-    optional { ?hpo_url rdfs:label ?hpo_label_ja . FILTER (lang(?hpo_label_ja) = "ja") }
-    
+  OPTIONAL { ?hpo_url rdfs:label ?hpo_label_ja . FILTER (lang(?hpo_label_ja) = "ja") }
+  OPTIONAL { ?hpo_category rdfs:label ?hpo_category_name_ja . FILTER (lang(?hpo_category_name_ja) = "ja") }
+  OPTIONAL { ?hpo_url obo:IAO_0000115 ?definition . }
+# add end 20250204
+  
+# del 20250204
+#  GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+#    ?hpo_url rdfs:label ?hpo_label_en .
+#    #?hpo_url <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id .
+#    BIND (replace(str(?hpo_url), 'http://purl.obolibrary.org/obo/HP_', 'HP:') AS ?hpo_id)
+#    optional { ?hpo_url obo:IAO_0000115 ?definition . }
+#    ?hpo_url rdfs:subClassOf+ ?hpo_category .
+#    ?hpo_category rdfs:subClassOf obo:HP_0000118 .   
+#    ?hpo_category rdfs:label ?hpo_category_name_en .
+#  }
+#  optional { ?hpo_category rdfs:label ?hpo_category_name_ja . FILTER (lang(?hpo_category_name_ja) = "ja") }
+#  optional { ?hpo_url rdfs:label ?hpo_label_ja . FILTER (lang(?hpo_label_ja) = "ja") }
+
 } order by ?hpo_category ?hpo_id
 ```
 

@@ -1,18 +1,18 @@
 # [PCF] Get HPO data by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
-* `nando_id` MONDO ID
-  * default: 1200001
-  * example: 1200404, 1201073, 1200010, 120011
+* `mondo_id` MONDO ID
+  * default: 0000107
+  * example: 0000133, 0000141, 0000171, 0000179
 
 ## Endpoint
 https://dev-pubcasefinder.dbcls.jp/sparql
 
-## `nando_id_list`
+## `mondo_id_list`
 ```javascript
-({nando_id}) => {
-  nando_id = nando_id.replace(/NANDO:/g,"")
-  nando_id = 'nando:' + nando_id.replace(/[\s,]+/g," nando:")
-  return nando_id;
+({mondo_id}) => {
+  mondo_id = mondo_id.replace(/MONDO:/g,"")
+  mondo_id = 'mondo:MONDO_' + mondo_id.replace(/[\s,]+/g," mondo:MONDO_")
+  return mondo_id;
 }
 ```
 
@@ -21,7 +21,7 @@ https://dev-pubcasefinder.dbcls.jp/sparql
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX nando: <http://nanbyodata.jp/ontology/NANDO_>
+PREFIX mondo: <http://purl.obolibrary.org/obo/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -34,32 +34,18 @@ PREFIX sio: <http://semanticscience.org/resource/>
 SELECT DISTINCT ?hpo_id
 WHERE 
 {
-  VALUES ?nando_input { {{nando_id_list}}  }
+  VALUES ?mondo_input { {{mondo_id_list}}  }
   
+  ?mondo_input rdf:type owl:Class .
   
-  #?nando rdf:type owl:Class .
-  #FILTER(CONTAINS(STR(?nando), "NANDO_12"))
-
-  ?nando_input skos:exactMatch ?mondo_exactMatch .
-  ?disease_url rdfs:seeAlso ?mondo_exactMatch .
-
-  #?nando_input skos:exactMatch ?mondo_exactMatch .
-  #?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
-  #?disease_url rdfs:seeAlso ?mondo_sub_tier .
-  
+  ?disease_url rdfs:seeAlso ?mondo_input .
 
   ?dpa rdf:type oa:Annotation ;
        oa:hasBody ?hpo ;
        oa:hasTarget ?disease_url ;
        dcterms:source [dcterms:creator ?creator] .
   FILTER(?creator NOT IN("Database Center for Life Science"))
-  ?hpo <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id
-  optional {
-    ?hpo rdfs:label ?hpo_en, ?hpo_ja . 
-    FILTER (lang(?hpo_en) = "") .
-    FILTER (lang(?hpo_ja) = "ja") .
-  }
-
+  ?hpo <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id .
 
   #association
   ?as sio:SIO_000628 ?disease_url ;
