@@ -53,12 +53,18 @@ WHERE
        oa:hasTarget ?disease_url ;
        dcterms:source [dcterms:creator ?creator] .
   FILTER(?creator NOT IN("Database Center for Life Science"))
-  ?hpo <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id
-  optional {
-    ?hpo rdfs:label ?hpo_en, ?hpo_ja . 
-    FILTER (lang(?hpo_en) = "") .
-    FILTER (lang(?hpo_ja) = "ja") .
+  
+  GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+    ?hpo rdfs:subClassOf+ ?hpo_category .
+    ?hpo_category rdfs:subClassOf obo:0000118 .   
   }
+  
+  ?hpo <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id
+#  optional {
+#    ?hpo rdfs:label ?hpo_en, ?hpo_ja . 
+#    FILTER (lang(?hpo_en) = "") .
+#    FILTER (lang(?hpo_ja) = "ja") .
+#  }
 
 
   #association
