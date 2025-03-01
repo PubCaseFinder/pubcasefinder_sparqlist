@@ -59,7 +59,9 @@ WHERE
     ?hpo_category rdfs:subClassOf obo:0000118 .   
   }
   
-  ?hpo <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id
+  #?hpo <http://www.geneontology.org/formats/oboInOwl#id> ?hpo_id .
+  BIND (IRI(replace(STR(?hpo), 'http://purl.obolibrary.org/obo/HP_', 'HP:')) AS ?hpo_id)
+  
 #  optional {
 #    ?hpo rdfs:label ?hpo_en, ?hpo_ja . 
 #    FILTER (lang(?hpo_en) = "") .
