@@ -54,18 +54,37 @@ WHERE {
   ?gene rdf:type ncit:C16612 ;
         sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
 } 
-GROUP BY ?hgnc_gene_symbol
+#GROUP BY ?hgnc_gene_symbol
 #HAVING (COUNT(DISTINCT ?hpo) = 3)  # 두 개의 HPO가 모두 존재하는 MONDO ID만 선택
-ORDER BY ?hgnc_gene_symbol (COUNT(DISTINCT ?hpo))
+ORDER BY DESC (COUNT(DISTINCT ?hpo)) ?hgnc_gene_symbol 
 ```
 
 ## `return`
 ```javascript
-({result})=>{ 
+/*
+({result})=>{ // json
   return result.results.bindings.map(data => {
     return Object.keys(data).reduce((obj, key) => {
       obj[key] = data[key].value;
       return obj;
     }, {});
   });
-}
+*/
+({text({result}){ // tsv
+    var vars = result.head.vars;
+    var list = result.results.bindings;
+    var text = vars.join("\t") + "\n";
+    for(var i = 0; i < list.length; i++){
+      var values = [];
+      for(var j = 0; j < vars.length; j++){
+        var val = ""; 
+        if(list[i][vars[j]]) val = list[i][vars[j]].value;
+        if(val.match(/^\".+\"$/)) val = val.match(/^\"(.+)\"$/)[1];
+        values.push(val);
+      }
+      text += values.join("\t") + "\n";
+    }
+    return text;
+  }
+})
+```
