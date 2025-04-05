@@ -70,11 +70,11 @@ WHERE
 
 
   #association
-#  ?as sio:SIO_000628 ?disease_url ;
-#      sio:SIO_000628 ?gene .
-#  ?gene rdf:type ncit:C16612 ;
-#        dcterms:identifier ?gene_id ;
-#        sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
+  ?as sio:SIO_000628 ?disease_url ;
+      sio:SIO_000628 ?gene .
+  ?gene rdf:type ncit:C16612 ;
+        dcterms:identifier ?gene_id ;
+        sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
 }
 order by ?hpo_id
 ```

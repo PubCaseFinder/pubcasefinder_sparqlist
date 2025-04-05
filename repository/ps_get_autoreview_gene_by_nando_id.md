@@ -76,7 +76,8 @@ WHERE {
   ?as sio:SIO_000628 ?exactMatch_disease ;
       sio:SIO_000628 ?gene ;
       dcterms:source ?source_url .
-
+  FILTER (?source_url != <https://search.thegencc.org/download/action/submissions-export-csv>)
+  
   #?exactMatch_disease rdf:type ncit:C7057 . omim이 완벽하지 못하여 생기는 문제
   #gene info
   ?gene rdf:type ncit:C16612 ;
