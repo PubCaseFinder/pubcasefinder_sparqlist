@@ -27,13 +27,8 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 #SELECT DISTINCT *
-SELECT DISTINCT STR(?mondo) as ?mondo ?count
-#SELECT STR(?mondo) as ?mondo COUNT(DISTINCT ?gene) as ?count
-#SELECT COUNT(DISTINCT ?gene) as ?count
-#SELECT DISTINCT ?mondo_sup_tier ?gene
-#SELECT DISTINCT ?mondo_sup_tier COUNT(DISTINCT ?gene) as ?count
-#SELECT DISTINCT ?mondo_sup_tier ?gene
-
+SELECT DISTINCT STR(?mondo) as ?mondo
+#SELECT DISTINCT STR(?mondo) as ?mondo ?count
 WHERE {
   {
     SELECT DISTINCT ?mondo_sup_tier WHERE {
@@ -41,69 +36,17 @@ WHERE {
       FILTER(CONTAINS(STR(?mondo_sup_tier), "MONDO"))
     }
   }
-  
-#  {
-#    SELECT DISTINCT ?mondo_sup_tier ?disease WHERE {
-#      ?mondo_sub_tier rdfs:subClassOf* ?mondo_sup_tier ;
-#                      skos:exactMatch ?exactMatch_disease .
-#      FILTER(CONTAINS(STR(?mondo_sup_tier), "MONDO"))
-#      FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-#      BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
-#    }
-#  }
-#  ?disease rdf:type ncit:C7057 .
-#  ?gene rdf:type ncit:C16612 .
-#  ?as sio:SIO_000628 ?disease ;
-#      sio:SIO_000628 ?gene .
-#  ?mondo_sup_tier <http://www.geneontology.org/formats/oboInOwl#id> ?mondo .
-  
-#  {
-#    SELECT DISTINCT ?mondo_sup_tier COUNT(DISTINCT ?gene) as ?count WHERE {
-#      ?mondo_sub_tier rdfs:subClassOf* ?mondo_sup_tier ;
-#                      skos:exactMatch ?exactMatch_disease .
-#      FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-#      BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
-#      ?disease rdf:type ncit:C7057 .
-#      ?gene rdf:type ncit:C16612 .
-#      ?as sio:SIO_000628 ?disease ;
-#          sio:SIO_000628 ?gene .
-#    }
-#  }
   ?mondo_sup_tier sio:SIO_001112 ?count .
-  FILTER(DATATYPE(?count) = xsd:integer).
+  FILTER(DATATYPE(?count) = xsd:integer)
+  FILTER(?count > 200)
   ?mondo_sup_tier <http://www.geneontology.org/formats/oboInOwl#id> ?mondo .
-} order by DESC(?count)
+}
+ORDER BY ABS(?count - 200)
+LIMIT 1
 ```
 
 ## Output
 ```javascript
-({mondo_id_list, result})=>{ 
-  var rows = result.results.bindings;
-  var list = []
-  var min = 9999;
-  var temp = 0;
-  
-  for (let i = 0; i < rows.length; i++) {
-    if (0 != parseInt(rows[i].count.value) && 
-        200 <= parseInt(rows[i].count.value))
-    {
-      min = rows[i].count.value;
-      temp = i;
-    }
-  }
-  list.push(rows[temp].mondo.value);
-  //return list + " " + min
-  
-  return list
-  
-//  console.log("min : " + min, "row : " + temp)
-//  list.push(rows[0].mondo.value);
-//	return list
-/*  
-  if(rows){
-    //dic['MONDO:' + mondo_id_list] = list;
-    dic[mondo_id_list] = list;
-  }
-  return dic
-*/  
+({ result }) => {
+  return result.results.bindings.map(data => data["mondo"].value);
 }
