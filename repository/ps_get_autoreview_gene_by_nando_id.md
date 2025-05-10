@@ -54,7 +54,7 @@ WHERE {
   
   ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
   FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-  
+  BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
   OPTIONAL 
   {
     ?nando skos:exactMatch ?mondo_sub_tier ;
@@ -66,14 +66,17 @@ WHERE {
     FILTER(lang(?nando_en) = "en")
     FILTER(CONTAINS(STR(?nando), "NANDO_1"))
   }
-
-  ?mondo_sub_tier rdfs:label ?mondo_en ;
-                  rdfs:label ?mondo_ja .
-  FILTER (lang(?mondo_en) = "")
-  FILTER (lang(?mondo_ja) = "ja") .
-  
+  OPTIONAL {
+    ?mondo_sub_tier rdfs:label ?mondo_en .
+    FILTER (lang(?mondo_en) = "") . 
+  }
+  OPTIONAL {
+    ?mondo_sub_tier rdfs:label ?mondo_ja .
+    FILTER (lang(?mondo_ja) = "ja") .
+  }
   #association
-  ?as sio:SIO_000628 ?exactMatch_disease ;
+  #?as sio:SIO_000628 ?exactMatch_disease ;
+  ?as sio:SIO_000628 ?disease ;
       sio:SIO_000628 ?gene ;
       dcterms:source ?source_url .
   FILTER (?source_url != <https://search.thegencc.org/download/action/submissions-export-csv>)
