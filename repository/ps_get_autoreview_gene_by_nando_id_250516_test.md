@@ -134,7 +134,6 @@ order by ?hgnc_gene_symbol
 
 ## Output
 ```javascript
-/*
 ({ result }) => {
   const grouped = {};
 
@@ -153,14 +152,5 @@ order by ?hgnc_gene_symbol
   });
 
   return grouped;
-}
-*/
-({result})=>{ 
-  return result.results.bindings.map(data => {
-    return Object.keys(data).reduce((obj, key) => {
-      obj[key] = data[key].value;
-      return obj;
-    }, {});
-  });
 }
 ```

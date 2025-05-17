@@ -37,6 +37,7 @@ SELECT
 #?nando_label_ja
 #?nando_label_en
 ?nando_id
+?reference_nando_id
 WHERE {
   VALUES ?nando { nando:{{nando_id_list}} }
   ?an sio:SIO_000628 ?nando ;
@@ -47,7 +48,7 @@ WHERE {
                  sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
   ?nando rdfs:label ?nando_ja ;
          rdfs:label ?nando_en ;
-         dcterms:identifier ?nando_id .
+         dcterms:identifier ?nando_id, ?reference_nando_id .
   FILTER(lang(?nando_ja) = "ja")
   FILTER(lang(?nando_en) = "en")
   #BIND(CONCAT(?nando_ja, ", ", ?nando_id) AS ?nando_ja)
@@ -58,12 +59,23 @@ order by ?hgnc_gene_symbol
 
 ## Output
 ```javascript
-({result})=>{ 
-  return result.results.bindings.map(data => {
-    return Object.keys(data).reduce((obj, key) => {
+({ result }) => {
+  const grouped = {};
+
+  result.results.bindings.forEach(data => {
+    const entry = Object.keys(data).reduce((obj, key) => {
       obj[key] = data[key].value;
       return obj;
     }, {});
+
+    const nandoId = entry.reference_nando_id;
+
+    if (!grouped[nandoId]) {
+      grouped[nandoId] = [];
+    }
+    grouped[nandoId].push(entry);
   });
+
+  return grouped;
 }
 ```

@@ -39,6 +39,7 @@ SELECT
 (GROUP_concat(distinct ?source_name; separator = " | ") as ?source_name)
 (GROUP_concat(distinct ?inheritance_en; separator = ", ") as ?inheritance_en)
 (GROUP_concat(distinct ?inheritance_ja; separator = ", ") as ?inheritance_ja)
+?reference_nando_id
 WHERE {
 # Start 20250110
   {
@@ -48,7 +49,7 @@ WHERE {
           sio:SIO_000628 ?gene ;
           dcterms:source ?source .
       ?nando_input a owl:Class ;
-                     dcterms:identifier ?disease_id ;
+                     dcterms:identifier ?disease_id, ?reference_nando_id;
                      rdfs:label ?disease_name,?disease_name_ja .
       ?gene rdf:type ncit:C16612 ;
             sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] ;
@@ -68,18 +69,36 @@ WHERE {
   {
 # End 20250110    
     {
-      SELECT DISTINCT ?disease WHERE {
-        VALUES ?nando_input { {{#each nando_id_list}} nando:{{this}} {{/each}} }
-        optional {?nando_sub_tier nando:memberOf | rdfs:subClassOf* ?nando_input . }
+    SELECT DISTINCT ?nando_sub_tier ?mondo_sub_tier WHERE {
+      VALUES ?nando_input { {{#each nando_id_list}} nando:{{this}} {{/each}} }
+      {
+        # 하위 tier들의 MONDO
+        ?nando_sub_tier rdfs:subClassOf* ?nando_input .
+        FILTER (?nando_sub_tier != ?nando_input)
         ?nando_sub_tier skos:exactMatch ?mondo_exactMatch .
         ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
-        ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
-        FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-        #BIND(IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
-        BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
-        # 위의 BIND 부분은 OMIM의 주소가 변경된 문제로 최신 RDF로 변환 하면 삭제 해도 되는 부분
+      }
+      UNION
+      {
+        # 상위 tier만 가지는 고유한 MONDO
+        ?nando_input skos:exactMatch ?mondo_exactMatch .
+        ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
+
+        FILTER NOT EXISTS {
+          ?other_nando rdfs:subClassOf* ?nando_input .
+          FILTER (?other_nando != ?nando_input)
+          ?other_nando skos:exactMatch ?other_match .
+          ?mondo_sub_tier rdfs:subClassOf* ?other_match .
+        }
+        BIND(?nando_input AS ?nando_sub_tier)
       }
     }
+  }
+  ?nando_sub_tier dcterms:identifier ?reference_nando_id .
+  ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
+  FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+  BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+
     ?as sio:SIO_000628 ?disease ;
         sio:SIO_000628 ?gene ;
         dcterm:source ?source .
@@ -116,12 +135,23 @@ WHERE {
 
 ## Output
 ```javascript
-({result})=>{ 
-  return result.results.bindings.map(data => {
-    return Object.keys(data).reduce((obj, key) => {
+({ result }) => {
+  const grouped = {};
+
+  result.results.bindings.forEach(data => {
+    const entry = Object.keys(data).reduce((obj, key) => {
       obj[key] = data[key].value;
       return obj;
     }, {});
+
+    const nandoId = entry.reference_nando_id;
+
+    if (!grouped[nandoId]) {
+      grouped[nandoId] = [];
+    }
+    grouped[nandoId].push(entry);
   });
+
+  return grouped;
 }
 ```
