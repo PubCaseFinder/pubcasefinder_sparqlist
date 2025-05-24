@@ -1,7 +1,7 @@
 # [PCF] FILTER: GET GENE by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
-  * default: 0017838
+  * default: 0008199
   * example: 0018096, 0003847, 0018096, 0007477
 
 ## Endpoint
@@ -39,8 +39,10 @@ WHERE {
     SELECT DISTINCT ?disease WHERE { 
       ?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
       				  skos:exactMatch ?exactMatch_disease .
-      FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-      BIND(IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
+      #FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+      #BIND(IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
+      FILTER(CONTAINS(STR(?exactMatch_disease), "mim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+      BIND(IRI(REPLACE(STR(?exactMatch_disease), "https://omim.org/entry/|http://identifiers.org/omim/", "http://identifiers.org/mim/")) AS ?disease)
     }
   }
   ?as sio:SIO_000628 ?disease ;

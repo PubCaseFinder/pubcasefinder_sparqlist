@@ -1,7 +1,7 @@
 # [PCF] pcf panel filter prioritize phenotype - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `hpo_id` HPO ID
-  * default: 0032388 0002092 0033352
+  * default: 0010636 0100021 0002126
   * example: 0003847, 0018096, 0007477
 
 ## Endpoint
@@ -10,7 +10,7 @@ https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `hpo_id_list`
 ```javascript
-({ hpo_id }) => 
+({hpo_id}) => 
   'obo:' + hpo_id.replace(/HP:/g, '').trim().replace(/[\s,]+/g, ' obo:');
 ```
 

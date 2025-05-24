@@ -1,31 +1,38 @@
-# [PCF] FILTER: GET Auto review GENE by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET Auto review GENE by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
-* `nando_id` NANDO ID
-  * default: 1200477
-  * example: 1200021, 1200220, 1200477
+* `mondo_id` MONDO ID
+  * default: 0008199
+  * example: 0018096, 0004975, 0018096, 0007477
 
 ## Endpoint
 https://dev-pubcasefinder.dbcls.jp/sparql/
 
-## `nando_id_list`
+## `mondo_id_list`
 ```javascript
-({nando_id}) => {
-  nando_id = nando_id.replace(/NANDO:/gi,"").replace(/[\s,]/g," ")
-   if (nando_id.match(/[^\s]/)) return nando_id.split(/\s+/);
+({ mondo_id }) =>
+  'mondo:' + mondo_id.replace(/MONDO:/gi, '').trim().replace(/[\s,]+/g, ' mondo:');
+/*
+({ mondo_id }) => {
+  mondo_id = mondo_id.replace(/MONDO:/gi, "").replace(/[\s,]+/g, " ");
+  if (mondo_id.match(/[^\s]/)) {
+    return mondo_id
+      .trim()
+      .split(" ")
+      .map(id => `mondo:${id}`)
+      .join(" ");
+  }
   return false;
-  //return mondo_id;
-}
+}*/
 ```
 
 ## `result` 
 ```sparql
-PREFIX : <http://nanbyodata.jp/ontology/nando#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX nando: <http://nanbyodata.jp/ontology/NANDO_>
+PREFIX nando: <http://nanbyodata.jp/ontology/nando#>
 PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
+PREFIX mondo: <http://purl.obolibrary.org/obo/MONDO_>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX oboinowl: <http://www.geneontology.org/formats/oboInOwl#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX sio: <http://semanticscience.org/resource/>
@@ -36,57 +43,21 @@ SELECT DISTINCT
 ?rating
 ?source
 ?source_url
-?nando_ja ?nando_en ?nando_id
 ?mondo_ja
 ?mondo_en
 ?mondo_sub_tier AS ?mondo_url
 ?moi_ja
 ?moi_en
-?nando_sub_tier
-?reference_nando_id
+?reference_mondo_id
 WHERE { 
-  {
-    SELECT DISTINCT ?nando_sub_tier ?mondo_sub_tier WHERE {
-      VALUES ?nando_input { nando:{{nando_id_list}} }
-      {
-        # 하위 tier들의 MONDO
-        ?nando_sub_tier rdfs:subClassOf* ?nando_input .
-        FILTER (?nando_sub_tier != ?nando_input)
-        ?nando_sub_tier skos:exactMatch ?mondo_exactMatch .
-        ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
-      }
-      UNION
-      {
-        # 상위 tier만 가지는 고유한 MONDO
-        ?nando_input skos:exactMatch ?mondo_exactMatch .
-        ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
-
-        FILTER NOT EXISTS {
-          ?other_nando rdfs:subClassOf* ?nando_input .
-          FILTER (?other_nando != ?nando_input)
-          ?other_nando skos:exactMatch ?other_match .
-          ?mondo_sub_tier rdfs:subClassOf* ?other_match .
-        }
-        BIND(?nando_input AS ?nando_sub_tier)
-      }
-    }
-  }
-  ?nando_sub_tier dcterms:identifier ?reference_nando_id .
+  VALUES ?mondo_input { {{mondo_id_list}} }
+  
+  ?mondo_sub_tier rdfs:subClassOf* ?mondo_input .
   ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
-  FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-  BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
-  OPTIONAL 
-  {
-    ?nando skos:exactMatch ?mondo_sub_tier ;
-           dcterms:identifier ?nando_id ;
-           rdfs:label ?nando_ja ;
-           rdfs:label ?nando_en.
-    
-    FILTER(lang(?nando_ja) = "ja")
-    FILTER(lang(?nando_en) = "en")
-    FILTER(CONTAINS(STR(?nando), "NANDO_1"))
-  }
-  FILTER (?reference_nando_id = ?nando_id || !BOUND(?nando_id))
+  ?mondo_sub_tier oboinowl:id ?reference_mondo_id .
+  FILTER(CONTAINS(STR(?exactMatch_disease), "mim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+  BIND(IRI(REPLACE(STR(?exactMatch_disease), "https://omim.org/entry/|http://identifiers.org/omim/", "http://identifiers.org/mim/")) AS ?disease)
+
   OPTIONAL {
     ?mondo_sub_tier rdfs:label ?mondo_en .
     FILTER (lang(?mondo_en) = "") . 
@@ -103,11 +74,10 @@ WHERE {
   FILTER (?source_uri != <https://search.thegencc.org/download/action/submissions-export-csv>)
   
   #mode of inheritance
-  OPTIONAL {
-    ?disease :hasInheritance ?inheritance .
-    ?inheritance rdfs:label ?moi_en, ?moi_ja .
-    FILTER (lang(?moi_en) = "" && lang(?moi_ja) = "ja") .
-  }
+  ?disease nando:hasInheritance ?inheritance .
+  ?inheritance rdfs:label ?moi_en, ?moi_ja .
+  FILTER (lang(?moi_en) = "" && lang(?moi_ja) = "ja") .
+  
   #?exactMatch_disease rdf:type ncit:C7057 . omim이 완벽하지 못하여 생기는 문제
   #gene info
   ?gene rdf:type ncit:C16612 ;
@@ -117,7 +87,7 @@ WHERE {
   OPTIONAL {
     #GenCC source
     ?source_uri obo:IAO_0000114 ?gencc_rating ;
-    #            :hasInheritance ?moi ;
+    #            nando:hasInheritance ?moi ;
                 dcterms:creator ?submitter .
     #mode of inheritance
     #?moi rdfs:label ?moi_en ;
@@ -148,12 +118,12 @@ order by ?hgnc_gene_symbol
       return obj;
     }, {});
 
-    const nandoId = entry.reference_nando_id;
+    const mondoId = entry.reference_mondo_id;
 
-    if (!grouped[nandoId]) {
-      grouped[nandoId] = [];
+    if (!grouped[mondoId]) {
+      grouped[mondoId] = [];
     }
-    grouped[nandoId].push(entry);
+    grouped[mondoId].push(entry);
   });
 
   return grouped;
