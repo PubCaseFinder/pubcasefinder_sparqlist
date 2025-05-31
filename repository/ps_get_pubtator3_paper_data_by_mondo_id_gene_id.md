@@ -99,23 +99,19 @@ https://rdfportal.org/ncbi/sparql
 ```sparql
 PREFIX dcterm: <http://purl.org/dc/terms/>
 PREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>
-PREFIX bibo: <http://purl.org/ontology/bibo/>
-SELECT DISTINCT ?pmid ?date 
-?title ?abstract ?source
+PREFIX basic: <http://prismstandard.org/namespeces/1.2/basic/>
+SELECT DISTINCT ?title ?pubmed_id AS ?paper_url ?journal ?date "PubTator3" AS ?source
 {
   GRAPH <http://rdfportal.org/dataset/pubmed>
         {
           VALUES ?pubmed_id { {{pubmed_list}} }
-          #VALUES ?pubmed_id {  {{#each pubmed_list}} "{{this}}" {{/each}} }
-          ?pubmed_id dcterm:created ?date ;
-                     dcterm:identifier ?pmid ;
-                     dcterm:title ?title ;
-                     bibo:abstract ?abstract ;
-                     dcterm:source ?source .
+
+          ?pubmed_id dcterm:title ?title ;
+                     basic:publicationName ?journal ;
+                     dcterm:issued ?date .
         }
 }
 ORDER BY DESC(?date)
-limit 100
 ```
 
 ## Output
