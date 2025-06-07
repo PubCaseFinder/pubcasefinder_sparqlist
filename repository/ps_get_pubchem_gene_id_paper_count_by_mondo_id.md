@@ -2,7 +2,7 @@
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0005093
-  * example: 0009903, 0007943, 0018096, 0007477
+  * example: 0012197, 0007943, 0018096, 0007477
 
 ## Endpoint
 https://rdfportal.org/pubchem/sparql

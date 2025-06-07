@@ -19,7 +19,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mondo: <http://purl.obolibrary.org/obo/MONDO_>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-SELECT DISTINCT ?mesh_id
+SELECT DISTINCT ?mondo_list ?mesh_id
 WHERE {
   VALUES ?mondo_list { {{mondo_id_list}} }
   #?mondo_sub_tier  rdfs:subClassOf* ?mondo_list .

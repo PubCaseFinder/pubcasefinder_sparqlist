@@ -47,7 +47,7 @@ WHERE {
     ?disease skos:relatedMatch ?relatedMatch .
     #FILTER (CONTAINS(STR(?relatedMatch), "MONDO"))
   }
-
+  
   GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/gene> {
     ?gene rdfs:seeAlso ?ncbigene .
     #FILTER (CONTAINS(STR(?ncbigene), "http://identifiers.org/ncbigene:"))
@@ -55,6 +55,7 @@ WHERE {
           bao:BAO_0002870 ?md5 ;
           up:organism taxonomy:TAXID9606 .
   }
+  
   GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/cooccurrence> {
     ?cooccurrence rdf:subject ?disease ;
                   rdf:object ?md5 ;
