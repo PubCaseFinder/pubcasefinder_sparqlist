@@ -63,7 +63,7 @@ WHERE {
       ?mim_id nando:hasInheritance ?inheritance .
       ?inheritance rdfs:label ?inheritance_name_en .
       ?inheritance rdfs:label ?inheritance_name_ja .
-      FILTER (lang(?inheritance_name_en) = "en")
+      FILTER (lang(?inheritance_name_en) = "")
       FILTER (lang(?inheritance_name_ja) = "ja")
     }
     

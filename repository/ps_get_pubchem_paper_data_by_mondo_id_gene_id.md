@@ -8,7 +8,9 @@
   * example: 8517, 488
 
 ## Endpoint
-https://rdfportal.org/pubchem/sparql
+https://rdfportal.org/backend/pubchem/sparql
+
+//https://rdfportal.org/pubchem/sparql
 
 ## `mondo_id_list`
 ```javascript

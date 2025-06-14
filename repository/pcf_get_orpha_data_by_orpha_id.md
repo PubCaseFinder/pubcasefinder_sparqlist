@@ -106,7 +106,7 @@ WHERE {
         ?inheritance_ja rdfs:label ?inheritance_name_ja .
         BIND (replace(str(?inheritance_en), 'http://purl.obolibrary.org/obo/HP_', 'HP:') AS ?inheritance_id_en)
         BIND (replace(str(?inheritance_ja), 'http://purl.obolibrary.org/obo/HP_', 'HP:') AS ?inheritance_id_ja)
-        #FILTER (lang(?inheritance_name_en) = "en")
+        FILTER (lang(?inheritance_name_en) = "")
         FILTER (lang(?inheritance_name_ja) = "ja")
       }
 

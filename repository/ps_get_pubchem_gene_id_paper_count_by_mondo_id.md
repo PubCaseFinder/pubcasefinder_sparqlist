@@ -5,7 +5,9 @@
   * example: 0012197, 0007943, 0018096, 0007477
 
 ## Endpoint
-https://rdfportal.org/pubchem/sparql
+https://rdfportal.org/backend/pubchem/sparql
+
+//https://rdfportal.org/pubchem/sparql
 
 ## `mondo_id_list`
 ```javascript

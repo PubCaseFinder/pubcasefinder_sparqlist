@@ -73,16 +73,19 @@ WHERE {
       dcterms:source ?source_uri .
   FILTER (?source_uri != <https://search.thegencc.org/download/action/submissions-export-csv>)
   
-  #mode of inheritance
-  ?disease nando:hasInheritance ?inheritance .
-  ?inheritance rdfs:label ?moi_en, ?moi_ja .
-  FILTER (lang(?moi_en) = "" && lang(?moi_ja) = "ja") .
-  
   #?exactMatch_disease rdf:type ncit:C7057 . omim이 완벽하지 못하여 생기는 문제
   #gene info
   ?gene rdf:type ncit:C16612 ;
         dcterms:identifier ?ncbi_gene_id ;
         sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
+  
+  
+  OPTIONAL {
+    #mode of inheritance
+    ?disease nando:hasInheritance ?inheritance .
+    ?inheritance rdfs:label ?moi_en, ?moi_ja .
+    FILTER (lang(?moi_en) = "" && lang(?moi_ja) = "ja") .
+  }
   
   OPTIONAL {
     #GenCC source

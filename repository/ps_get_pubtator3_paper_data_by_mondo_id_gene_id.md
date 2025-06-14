@@ -93,7 +93,9 @@ WHERE {
 })
 ```
 ## Endpoint
-https://rdfportal.org/ncbi/sparql
+https://rdfportal.org/backend/ncbi/sparql
+
+//https://rdfportal.org/ncbi/sparql
 
 ## `result` 
 ```sparql
