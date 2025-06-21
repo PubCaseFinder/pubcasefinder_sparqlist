@@ -30,51 +30,66 @@ PREFIX sio: <http://semanticscience.org/resource/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX up: <http://purl.uniprot.org/core/>
 PREFIX taxonomy: <http://rdf.ncbi.nlm.nih.gov/pubchem/taxonomy/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?gene_id (COUNT(DISTINCT ?ref) AS ?count)
 WHERE {
-  VALUES ?relatedMatch { {{mondo_id_list}} }
-
-  GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/disease> {
-    ?disease skos:relatedMatch ?relatedMatch .
+  {
+    SELECT DISTINCT ?disease ?md5 WHERE {
+      VALUES ?relatedMatch { {{mondo_id_list}} }
+      GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/disease> {
+        ?disease skos:relatedMatch ?relatedMatch .
+      }
+      GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/cooccurrence> {
+        ?cooccurrence rdf:subject ?disease ;
+                      rdf:object ?md5 ;
+                      rdf:type sio:SIO_000983 .
+      }
+      GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/gene> {
+        ?gene bao:BAO_0002870 ?md5 ;
+              up:organism taxonomy:TAXID9606 ;
+              rdf:type sio:SIO_010035 .
+      }
+    }
   }
-
-  GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/cooccurrence> {
-    ?cooccurrence rdf:subject ?disease ;
-                  rdf:object ?md5 ;
-                  rdf:type sio:SIO_000983 .
-  }
-
-  GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/gene> {
-    ?gene rdfs:seeAlso ?ncbigene .
-    FILTER (CONTAINS(STR(?ncbigene), "http://identifiers.org/ncbigene:"))
-    ?gene a sio:SIO_010035 ;
-            bao:BAO_0002870 ?md5 ;
-            up:organism taxonomy:TAXID9606 .
-  }
-
   GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/reference> {
-    ?ref pcvocab:discussesAsDerivedByTextMining ?md5 , ?disease ;
+    ?ref pcvocab:discussesAsDerivedByTextMining ?disease, ?md5 ;
          dcterms:title ?title ;
-         dcterms:identifier ?identifier .
-    
+         dcterms:identifier ?identifier ;
+         dcterms:date ?date .
     FILTER (?title != "Title Not Available")
     FILTER REGEX(STR(?identifier), "^https://pubmed\\.ncbi\\.nlm\\.nih\\.gov/\\d+$")
+    BIND(
+      IF(
+        REGEX(STR(?date), "^\\d{4}-\\d{2}-\\d{2}$"),
+        xsd:dateTime(?date),
+        IF(
+          REGEX(STR(?date), "^\\d{6}$"),
+          xsd:dateTime(CONCAT(SUBSTR(STR(?date), 1, 4), "-", SUBSTR(STR(?date), 5, 2), "-01")),
+          xsd:dateTime("1900-01-01")
+        )
+      ) AS ?normalizedDate
+    )
+    #FILTER(?normalizedDate >= "2023-01-01T00:00:00"^^xsd:dateTime)
   }
-  BIND(REPLACE(STR(?ncbigene), "http://identifiers.org/ncbigene:", "") AS ?gene_id)
+  GRAPH <http://rdf.ncbi.nlm.nih.gov/pubchem/gene> {
+    ?gene bao:BAO_0002870 ?md5 ;
+          up:organism taxonomy:TAXID9606 ;
+          rdf:type sio:SIO_010035 .
+    ?gene rdfs:seeAlso ?gene_id .
+    FILTER (CONTAINS(STR(?gene_id), "http://identifiers.org/ncbigene:"))   
+  }
 }
-ORDER BY DESC(?referenceCount)
-
 ```
 
 ## Output
 ```javascript
-({result})=>{ 
+({ result }) => {
   return result.results.bindings.map(data => {
-    return Object.keys(data).reduce((obj, key) => {
-      obj[key] = data[key].value;
-      return obj;
-    }, {});
+    return {
+      gene_id: data.gene_id.value.replace("http://identifiers.org/ncbigene:", ""),
+      count: data.count.value
+    };
   });
 }
 ```

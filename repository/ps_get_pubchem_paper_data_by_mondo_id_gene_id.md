@@ -70,7 +70,6 @@ WHERE {
          dcterms:identifier ?paper_url ;
          prism:publicationName ?journal ;
          dcterms:date ?date .
-
     FILTER (?title != "Title Not Available")
     FILTER REGEX(STR(?paper_url), "^https://pubmed\\.ncbi\\.nlm\\.nih\\.gov/\\d+$")
     BIND(
@@ -84,6 +83,7 @@ WHERE {
         )
       ) AS ?normalizedDate
     )
+    #FILTER(?normalizedDate >= "2023-01-01T00:00:00"^^xsd:dateTime)
   }
 }
 ORDER BY ?ncbigene DESC (?normalizedDate)
