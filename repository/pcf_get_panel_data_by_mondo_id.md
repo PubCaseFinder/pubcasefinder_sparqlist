@@ -56,22 +56,24 @@ WHERE {
       #OPTIONAL { ?mondo sio:SIO_001112 ?count }
       
       #---------- gene count start
-      {
-        SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE {
-          {
-            SELECT DISTINCT ?mondo ?disease WHERE { 
-              ?mondo_sub_tier rdfs:subClassOf* ?mondo ;
-                              skos:exactMatch ?exactMatch_disease .
+      OPTIONAL{
+        {
+          SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE {
+            {
+              SELECT DISTINCT ?mondo ?disease WHERE { 
+                ?mondo_sub_tier rdfs:subClassOf* ?mondo ;
+                                skos:exactMatch ?exactMatch_disease .
 
-              FILTER(CONTAINS(STR(?exactMatch_disease), "mim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-              BIND(IRI(REPLACE(STR(?exactMatch_disease), "https://omim.org/entry/|http://identifiers.org/omim/", "http://identifiers.org/mim/")) AS ?disease)
+                FILTER(CONTAINS(STR(?exactMatch_disease), "mim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+                BIND(IRI(REPLACE(STR(?exactMatch_disease), "https://omim.org/entry/|http://identifiers.org/omim/", "http://identifiers.org/mim/")) AS ?disease)
+              }
             }
+            ?as sio:SIO_000628 ?disease ;
+                sio:SIO_000628 ?gene .
+            ?disease rdf:type ncit:C7057 .
+            ?gene rdf:type ncit:C16612 ;
+                  dcterms:identifier ?gene_id . 
           }
-          ?as sio:SIO_000628 ?disease ;
-              sio:SIO_000628 ?gene .
-          ?disease rdf:type ncit:C7057 .
-          ?gene rdf:type ncit:C16612 ;
-                dcterms:identifier ?gene_id . 
         }
       }
       #---------- gene count end

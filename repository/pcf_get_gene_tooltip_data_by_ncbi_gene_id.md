@@ -65,6 +65,45 @@ WHERE {
 
 ## Output
 ```javascript
+({ result }) => {
+  const dic = {
+    hgnc_gene_symbol: null,
+    type_of_gene: null,
+    location: null,
+    full_name: null,
+    ncbi_gene_summary: null,
+    ncbi_gene_url: null,
+    hgnc_gene_url: null,
+    other_full_name: new Set(),
+    synonym: new Set()
+  };
+
+  const rows = result.results.bindings;
+
+  for (const row of rows) {
+    for (const key in row) {
+      const value = row[key]?.value;
+      if (!value) continue;
+
+      if (key === 'synonym' || key === 'other_full_name') {
+        dic[key].add(value);
+      } else {
+        // 최초만 저장, 이후 값은 무시
+        if (dic[key] === null) {
+          dic[key] = value;
+        }
+      }
+    }
+  }
+
+  // Set을 Array로 변환
+  dic.synonym = Array.from(dic.synonym);
+  dic.other_full_name = Array.from(dic.other_full_name);
+
+  return dic;
+}
+
+/*
 ({result})=>{ 
   var dic = {}
   var rows = result.results.bindings;
@@ -114,4 +153,5 @@ WHERE {
   
   return dic
 }
+*/
 ```

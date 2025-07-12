@@ -1,4 +1,4 @@
-# [PCF] FILTER: GET Auto review GENE by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET GENE IDs by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0008199
@@ -32,18 +32,28 @@ PREFIX sio: <http://semanticscience.org/resource/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX mondo: <http://purl.obolibrary.org/obo/MONDO_>
 SELECT DISTINCT
+(CONCAT("MONDO:", "{{mondo_id_list}}" )) AS ?panel_disease_id
+?panel_disease_name
+?reference_mondo_id
+?mondo_en AS ?disease_name_en
+?mondo_ja AS ?disease_name_ja
+#?mondo_sub_tier AS ?mondo_url
 ?ncbi_gene_id
-?hgnc_gene_symbol
-?rating
+?hgnc_gene_symbol AS ?gene_symbol
+?rating AS ?classification
 ?source
 ?source_url
-?mondo_ja
-?mondo_en
-?mondo_sub_tier AS ?mondo_url
-?moi_ja
 ?moi_en
-?reference_mondo_id
-WHERE { 
+?moi_ja
+
+WHERE {
+  # mondo_input 라벨
+  VALUES ?mondo_input { mondo:{{mondo_id_list}} }
+
+  OPTIONAL {
+    ?mondo_input rdfs:label ?panel_disease_name .
+    FILTER(lang(?panel_disease_name) = "")
+  }
   {
     SELECT DISTINCT ?mondo_sub_tier WHERE {
       VALUES ?mondo_input { mondo:{{mondo_id_list}} }
@@ -109,6 +119,24 @@ order by ?hgnc_gene_symbol
 
 ## Output
 ```javascript
+({text({result}){ // tsv
+    var vars = result.head.vars;
+    var list = result.results.bindings;
+    var text = vars.join("\t") + "\n";
+    for(var i = 0; i < list.length; i++){
+      var values = [];
+      for(var j = 0; j < vars.length; j++){
+        var val = ""; 
+        if(list[i][vars[j]]) val = list[i][vars[j]].value;
+        if(val.match(/^\".+\"$/)) val = val.match(/^\"(.+)\"$/)[1];
+        values.push(val);
+      }
+      text += values.join("\t") + "\n";
+    }
+    return text;
+  }
+})
+/*
 ({ result }) => {
   const grouped = {};
 
@@ -128,4 +156,5 @@ order by ?hgnc_gene_symbol
 
   return grouped;
 }
+*/
 ```
