@@ -1,21 +1,21 @@
-# [PCF] Get PubTator3 paper by MONDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get PubTator3 paper by NANDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
-* `mondo_id` MONDO ID
-  * default: 0005093
-  * example: 0009903, 0007943, 0018096, 0007477
+* `nando_id` NANDO ID
+  * default: 1200477
+  * example: 1200478, 1200479, 1200480
 * `ncbi_gene_id` NCBI gene ID
-  * default: 374
-  * example: 7124, 10262, 55636
+  * default: 58
+  * example: 88, 274, 9531
 
 ## Endpoint
 https://pubcasefinder-rdf.dbcls.jp/sparql
 
-## `mondo_id_list`
+## `nando_id_list`
 ```javascript
-({mondo_id}) => {
-  mondo_id = mondo_id.replace(/MONDO:/g,"")
-  mondo_id = 'mondo:MONDO_' + mondo_id.replace(/[\s,]+/g," mondo:MONDO_")
-  return mondo_id;
+({nando_id}) => {
+  nando_id = nando_id.replace(/NANDO:/g,"")
+  nando_id = 'nando:NANDO_' + nando_id.replace(/[\s,]+/g," nando:NANDO_")
+  return nando_id;
 }
 ```
 
@@ -23,16 +23,16 @@ https://pubcasefinder-rdf.dbcls.jp/sparql
 ```sparql
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX nando: <http://nanbyodata.jp/ontology/>
 PREFIX mondo: <http://purl.obolibrary.org/obo/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 SELECT DISTINCT ?mesh_id
 WHERE {
-  VALUES ?mondo_list { {{mondo_id_list}} }
-  #?mondo_sub_tier  rdfs:subClassOf* ?mondo_list .
-  #?mondo_sub_tier skos:exactMatch ?mesh_id .
+  VALUES ?nando_list { {{nando_id_list}} }
+  	?nando_list skos:exactMatch ?mondo_exactMatch .
+  ?mondo_list rdfs:subClassOf* ?mondo_exactMatch .
   ?mondo_list skos:exactMatch ?mesh_id .
   FILTER(CONTAINS(STR(?mesh_id), "mesh"))
-
 }
 ```
 

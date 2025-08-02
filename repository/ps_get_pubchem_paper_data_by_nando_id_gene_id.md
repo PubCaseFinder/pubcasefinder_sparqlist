@@ -1,22 +1,61 @@
-# [PCF] Get PubChem data by MONDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get PubChem data by NANDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
-* `mondo_id` MONDO ID
-  * default: 0005093
-  * example: 0005835, 0004975, 0018096, 0007477
+* `nando_id` NANDO ID
+  * default: 1200477
+  * example: 1200478, 1200479, 1200480
 * `ncbi_gene_id` NCBI gene ID
-  * default: 1294
-  * example: 8517, 488
+  * default: 58
+  * example: 88, 274, 9531
+
+## Endpoint
+https://dev-pubcasefinder.dbcls.jp/sparql/
+
+## `nando_id_list`
+```javascript
+({nando_id}) => {
+  nando_id = nando_id.replace(/NANDO:/g,"")
+  nando_id = 'nando:NANDO_' + nando_id.replace(/[\s,]+/g," nando:NANDO_")
+  return nando_id;
+}
+```
+## `get_mondo_id` 
+```sparql
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX nando: <http://nanbyodata.jp/ontology/>
+PREFIX mondo: <http://purl.obolibrary.org/obo/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT DISTINCT ?mondo_id
+WHERE {
+  VALUES ?nando_list { {{nando_id_list}} }
+  ?nando_list skos:exactMatch ?mondo_exactMatch .
+  ?mondo_id rdfs:subClassOf* ?mondo_exactMatch .
+}
+```
+
+## `mondo_id_list`
+```javascript
+({
+  json({get_mondo_id}) {
+    let headers = get_mondo_id.head.vars;
+    let mondo_list = get_mondo_id.results.bindings.map((row) => {
+      let obj = {};
+      headers.forEach((column) => {
+        obj[column] = (row[column] == null) ? "" : row[column].value.replace('http://purl.obolibrary.org/obo/', '');
+      });
+      return obj;
+    });
+    return mondo_list.map((row) => { return "mondo:" + row["mondo_id"] }).join(" ");
+  }
+})
+```
 
 ## Endpoint
 https://rdfportal.org/backend/pubchem/sparql
 
 //https://rdfportal.org/pubchem/sparql
 
-## `mondo_id_list`
-```javascript
-({ mondo_id }) =>
-  'mondo:' + mondo_id.replace(/MONDO:/gi, '').trim().replace(/[\s,]+/g, ' mondo:');
-```
+
 
 ## `ncbi_gene_id_list`
 ```javascript
@@ -32,7 +71,7 @@ PREFIX bao: <http://www.bioassayontology.org/bao#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX ncbigene: <http://identifiers.org/ncbigene:>
 PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
-PREFIX mondo: <http://purl.obolibrary.org/obo/MONDO_>
+PREFIX mondo: <http://purl.obolibrary.org/obo/>
 PREFIX pcvocab: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
 PREFIX prism: <http://prismstandard.org/namespaces/basic/3.0/>
 PREFIX sio: <http://semanticscience.org/resource/>

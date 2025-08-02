@@ -1,4 +1,4 @@
-# [PCF] Get GENE ID AND PAPER COUNT by MONDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get PubChem data COUNT by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0005093

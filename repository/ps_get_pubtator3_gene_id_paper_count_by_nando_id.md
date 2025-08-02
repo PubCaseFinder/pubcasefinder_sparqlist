@@ -1,32 +1,35 @@
-# [PCF] Get PubTator3 paper COUNT by MONDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get PubTator3 paper COUNT by NANDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
-* `mondo_id` MONDO ID
-  * default: 0005093
-  * example: 0009903, 0007943, 0018096, 0007477
+* `nando_id` NANDO ID
+  * default: 1200477
+  * example: 1200478, 1200479, 1200480
 
 ## Endpoint
 https://pubcasefinder-rdf.dbcls.jp/sparql
 
-## `mondo_id_list`
+## `nando_id_list`
 ```javascript
-({ mondo_id }) =>
-  'mondo:' + mondo_id.replace(/MONDO:/gi, '').trim().replace(/[\s,]+/g, ' mondo:');
+({nando_id}) => {
+  nando_id = nando_id.replace(/NANDO:/g,"")
+  nando_id = 'nando:NANDO_' + nando_id.replace(/[\s,]+/g," nando:NANDO_")
+  return nando_id;
+}
 ```
 
 ## `get_mesh_id` 
 ```sparql
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX mondo: <http://purl.obolibrary.org/obo/MONDO_>
+PREFIX nando: <http://nanbyodata.jp/ontology/>
+PREFIX mondo: <http://purl.obolibrary.org/obo/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-SELECT DISTINCT ?mondo_list ?mesh_id
+SELECT DISTINCT ?mesh_id
 WHERE {
-  VALUES ?mondo_list { {{mondo_id_list}} }
-  #?mondo_sub_tier  rdfs:subClassOf* ?mondo_list .
-  #?mondo_sub_tier skos:exactMatch ?mesh_id .
+  VALUES ?nando_list { {{nando_id_list}} }
+  ?nando_list skos:exactMatch ?mondo_exactMatch .
+  ?mondo_list rdfs:subClassOf* ?mondo_exactMatch .
   ?mondo_list skos:exactMatch ?mesh_id .
   FILTER(CONTAINS(STR(?mesh_id), "mesh"))
-
 }
 ```
 
@@ -55,10 +58,12 @@ http://plod01:7200/repositories/PubTatorCentral
 #http://plod01:7200/repositories/pubtator3
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX biolink: <https://w3id.org/biolink/vocab/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX sio: <http://semanticscience.org/resource/>
 PREFIX mesh: <http://identifiers.org/mesh/>
-SELECT DISTINCT ?gene_id ?count
+
+SELECT DISTINCT ?gene_id (COUNT(DISTINCT ?pubmed_id) AS ?count)
 WHERE {
   #GRAPH <http://purl.jp/bio/10/pubtator3/20240527>
   GRAPH <http://purl.jp/bio/10/rdfportal/20241227>
@@ -68,11 +73,13 @@ WHERE {
               obo:RO_0003301 "ASSOCIATE" ;
               sio:SIO_000132 ?mesh_list ;
               sio:SIO_000132 ?ncbigene ;
-              biolink:has_count ?count ;
+              dcterms:source ?pubmed_id .
+              #biolink:has_count ?count ;
               FILTER (CONTAINS(STR(?ncbigene), "http://identifiers.org/ncbigene/"))
               BIND(REPLACE(STR(?ncbigene), "http://identifiers.org/ncbigene/", "") AS ?gene_id)
         }
 }
+GROUP BY ?gene_id
 ```
 
 ## Output
