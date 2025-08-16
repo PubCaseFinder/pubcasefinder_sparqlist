@@ -73,7 +73,8 @@ WHERE {
       VALUES ?nando_input { {{#each nando_id_list}} nando:{{this}} {{/each}} }
       {
         # 하위 tier들의 MONDO
-        ?nando_sub_tier rdfs:subClassOf* ?nando_input .
+        #?nando_sub_tier rdfs:subClassOf* ?nando_input .
+        OPTIONAL {?nando_sub_tier nando:memberOf | rdfs:subClassOf* ?nando_input . }
         FILTER (?nando_sub_tier != ?nando_input)
         ?nando_sub_tier skos:exactMatch ?mondo_exactMatch .
         ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
@@ -85,7 +86,8 @@ WHERE {
         ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
 
         FILTER NOT EXISTS {
-          ?other_nando rdfs:subClassOf* ?nando_input .
+          #?other_nando rdfs:subClassOf* ?nando_input .
+          OPTIONAL {?other_nando nando:memberOf | rdfs:subClassOf* ?nando_input . }
           FILTER (?other_nando != ?nando_input)
           ?other_nando skos:exactMatch ?other_match .
           ?mondo_sub_tier rdfs:subClassOf* ?other_match .
