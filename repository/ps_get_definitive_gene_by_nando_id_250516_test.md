@@ -31,7 +31,8 @@ SELECT
 ?hgnc_gene_symbol
 "Definitive" AS ?rating
 "指定難病の遺伝学的検査に関するガイドライン" AS ?source
-"https://jshg.jp/wp-content/uploads/2024/03/a02edeee573e7797da6a821a5bc48026.pdf" AS ?source_url
+?source_url
+#"https://jshg.jp/wp-content/uploads/2024/03/a02edeee573e7797da6a821a5bc48026.pdf" AS ?source_url
 ?nando_ja
 ?nando_en
 #?nando_label_ja
@@ -41,8 +42,8 @@ SELECT
 WHERE {
   VALUES ?nando { nando:{{nando_id_list}} }
   ?an sio:SIO_000628 ?nando ;
-      sio:SIO_000628 ?ncbi_gene_url .
-      #dcterms:source ?source .
+      sio:SIO_000628 ?ncbi_gene_url ;
+      dcterms:source ?source_url .
   ?ncbi_gene_url rdf:type ncit:C16612 ;
                  dcterms:identifier ?ncbi_gene_id ;
                  sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
