@@ -1,11 +1,11 @@
 # [PCF] Get PubTator3 paper by MONDO ID NCBI GENE ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
-  * default: 0005093
-  * example: 0009903, 0007943, 0018096, 0007477
+  * default: 0002708
+  * example: 0005093, 0009903, 0007943, 0018096, 0007477
 * `ncbi_gene_id` NCBI gene ID
-  * default: 374
-  * example: 7124, 10262, 55636
+  * default: 5458
+  * example: 374, 7124, 10262, 55636
 
 ## Endpoint
 https://pubcasefinder-rdf.dbcls.jp/sparql
@@ -56,6 +56,46 @@ WHERE {
 ## Endpoint
 http://plod01:7200/repositories/PubTatorCentral
 
+## `news_ids` 
+```sparql
+PREFIX sio:       <http://semanticscience.org/resource/>
+PREFIX ncbigene:  <http://identifiers.org/ncbigene/>
+PREFIX mesh:      <http://identifiers.org/mesh/>
+PREFIX schemaorg: <https://schema.org/>
+PREFIX pubmed:    <http://rdf.ncbi.nlm.nih.gov/pubmed/>
+
+SELECT DISTINCT ?news_id
+WHERE {
+  GRAPH <http://purl.jp/bio/10/rdfportal/20250817>
+  #GRAPH <http://purl.jp/bio/10/rdfportal/20241227> 
+        {
+          VALUES ?mesh_list { {{mesh_id_list}} }
+          ?rel sio:SIO_000132 ncbigene:{{ncbi_gene_id}} ;
+          sio:SIO_000132 ?mesh_list ;
+                         schemaorg:newsUpdatesAndGuidelines ?news_id .
+        }
+}
+```
+
+## `news_pubmed_values`
+```javascript
+({
+  json({news_ids}) {
+    const rows = news_ids?.results?.bindings ?? [];
+    const pmids = new Set();
+    for (const r of rows) {
+      const v = r.news_id?.value || "";
+      const id = v
+        .replace("http://rdf.ncbi.nlm.nih.gov/pubmed/", "")
+        .replace(/^pubmed:/, "");
+      if (id) pmids.add(id);
+    }
+    const arr = Array.from(pmids);
+    return arr.length ? arr.map(id => "pubmed:" + id).join(" ") : "";
+  }
+})
+```
+
 ## `input` 
 ```sparql
 #http://plod01:7200/repositories/pubtator3
@@ -66,12 +106,15 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 SELECT DISTINCT ?pubmed_id
 WHERE {
   #GRAPH <http://purl.jp/bio/10/pubtator3/20240527>
-  GRAPH <http://purl.jp/bio/10/rdfportal/20241227>
+  GRAPH <http://purl.jp/bio/10/rdfportal/20250817>
+  #GRAPH <http://purl.jp/bio/10/rdfportal/20241227>
         {
           VALUES ?mesh_list { {{mesh_id_list}} }
-          ?an sio:SIO_000132 ncbigene:{{ncbi_gene_id}} ;
-	          sio:SIO_000132 ?mesh_list ;
-              dcterms:source ?pubmed_id .
+          OPTIONAL {
+            ?an sio:SIO_000132 ncbigene:{{ncbi_gene_id}} ;
+            sio:SIO_000132 ?mesh_list ;
+                           dcterms:source ?pubmed_id .
+          }
         }
 }
 ```
@@ -94,24 +137,30 @@ WHERE {
 ```
 ## Endpoint
 https://rdfportal.org/backend/ncbi/sparql
-
 //https://rdfportal.org/ncbi/sparql
 
 ## `result` 
 ```sparql
-PREFIX dcterm: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX pubmed: <http://rdf.ncbi.nlm.nih.gov/pubmed/>
 PREFIX basic: <http://prismstandard.org/namespeces/1.2/basic/>
-SELECT DISTINCT ?title ?pubmed_id AS ?paper_url ?journal ?date "PubTator3" AS ?source
-{
-  GRAPH <http://rdfportal.org/dataset/pubmed>
-        {
-          VALUES ?pubmed_id { {{pubmed_list}} }
+PREFIX schemaorg: <https://schema.org/>
 
-          ?pubmed_id dcterm:title ?title ;
-                     basic:publicationName ?journal ;
-                     dcterm:issued ?date .
-        }
+SELECT DISTINCT ?title ?pubmed_id AS ?paper_url ?journal ?date "PubTator3" AS ?source ?new_association
+{
+  GRAPH <http://rdfportal.org/dataset/pubmed> {
+    VALUES ?pubmed_id { {{pubmed_list}} }
+    ?pubmed_id dcterms:title ?title ;
+               basic:publicationName ?journal ;
+               dcterms:issued ?date .
+  }
+
+  # news_pubmed_values 가 비어도 메인 결과는 유지됨
+  OPTIONAL {
+    VALUES ?news_id { {{news_pubmed_values}} }    # 여기 자리에 {{news_pubmed_values}} 들어감
+    FILTER(SAMETERM(?news_id, ?pubmed_id))
+    BIND("true" AS ?new_association)       # ← 일치하면 "true" 문자열 바인딩
+  }
 }
 ORDER BY DESC(?date)
 ```
