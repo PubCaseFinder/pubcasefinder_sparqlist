@@ -8,7 +8,8 @@
   * example: 88, 274, 9531
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
+//https://pubcasefinder-rdf.dbcls.jp/sparql
 
 ## `nando_id_list`
 ```javascript

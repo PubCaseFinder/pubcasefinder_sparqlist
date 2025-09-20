@@ -5,7 +5,8 @@
   * example: 0009903, 0007943, 0018096, 0007477
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
+//https://pubcasefinder-rdf.dbcls.jp/sparql
 
 ## `mondo_id_list`
 ```javascript
