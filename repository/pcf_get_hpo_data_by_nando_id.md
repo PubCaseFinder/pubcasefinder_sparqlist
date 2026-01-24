@@ -1,6 +1,6 @@
-# [PCF] Get HPO data by MONDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
+# [PCF] Get HPO data by NANDO ID - https://dev-pubcasefinder.dbcls.jp/sparql
 ## Parameters
-* `nando_id` MONDO ID
+* `nando_id` NANDO ID
   * default: 1200001
   * example: 1200404, 1201073, 1200010, 120011
 

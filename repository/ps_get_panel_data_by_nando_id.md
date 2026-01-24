@@ -1,7 +1,7 @@
 # [PCF] Get Panel data by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
 ## Parameters
 * `nando_id` NANDO ID
-  * default: 1200020
+  * default: 1200001
   * example: 1200030, 1200002, 1200028, 1200029, 1200043, 1200192, 1200208, 1200258, 1200286
 * `sort` name_en/name_ja/name_hira/count
   * default: name_en
@@ -53,6 +53,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX oa: <http://www.w3.org/ns/oa#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX oboinowl: <http://www.geneontology.org/formats/oboInOwl#>
 PREFIX nando: <http://nanbyodata.jp/ontology/NANDO_>
@@ -84,6 +85,9 @@ STR(?nando) AS ?nando_url
 (GROUP_concat(distinct ?icd10_id; separator = " | ") as ?icd10_id)
 (GROUP_concat(distinct CONCAT('https://icd.who.int/browse10/2019/en#/', STR(?icd10_url)); separator = " | ") as ?icd10_url)
 ?count
+#str(?count_hpo_id) as ?count_hpo_id
+#COUNT(DISTINCT ?hpo) as ?count_hpo_id
+?count_hpo_id
 WHERE {
   VALUES ?nando { {{#each nando_id_list}} nando:{{this}} {{/each}} }
   
@@ -139,7 +143,33 @@ WHERE {
     ?nando rdfs:seeAlso ?kegg_url . FILTER(CONTAINS(STR(?kegg_url), 'kegg')) 
     BIND(REPLACE(STR(?kegg_url), 'https://www.kegg.jp/dbget-bin/www_bget\\?ds_ja:', '') AS ?kegg_id)
   }
-  
+    
+  # HPO count
+  OPTIONAL {
+    {
+      SELECT ?nando COUNT(DISTINCT ?hpo) as ?count_hpo_id WHERE {
+        ?nando skos:exactMatch ?mondo .
+        ?disease_url rdfs:seeAlso ?mondo .
+        ?dpa rdf:type oa:Annotation ;
+             oa:hasBody ?hpo ;
+             oa:hasTarget ?disease_url ;
+             dcterms:source [dcterms:creator ?creator] .
+        FILTER(?creator NOT IN("Database Center for Life Science"))
+        GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+          ?hpo rdfs:subClassOf+ ?hpo_category .
+          ?hpo_category rdfs:subClassOf obo:HP_0000118 .   
+        }
+        # Disease Gene Association
+        #    OPTIONAL {
+        #      ?as sio:SIO_000628 ?disease_url ;
+        #          sio:SIO_000628 ?gene .
+        #      ?gene rdf:type ncit:C16612 .
+        #      ?gene rdfs:label ?gene_symbol .
+        #    }
+      }
+    }
+  }
+    
   OPTIONAL {
     #?nando skos:exactMatch ?mondo .
     {
