@@ -75,16 +75,26 @@ WHERE {
   ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
   FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
   BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+  # add start 260303
+  ?nando_sub_tier rdfs:label ?nando_ja ;
+                  rdfs:label ?nando_en.
+  FILTER(lang(?nando_ja) = "ja")
+  FILTER(lang(?nando_en) = "en")
+  FILTER(CONTAINS(STR(?nando_sub_tier), "NANDO_1"))
+  # add end 260303
+  
   OPTIONAL 
   {
     ?nando skos:exactMatch ?mondo_sub_tier ;
-           dcterms:identifier ?nando_id ;
-           rdfs:label ?nando_ja ;
-           rdfs:label ?nando_en.
-    
-    FILTER(lang(?nando_ja) = "ja")
-    FILTER(lang(?nando_en) = "en")
-    FILTER(CONTAINS(STR(?nando), "NANDO_1"))
+           dcterms:identifier ?nando_id .
+# del start 260303
+#           rdfs:label ?nando_ja ;
+#           rdfs:label ?nando_en.
+#    
+#    FILTER(lang(?nando_ja) = "ja")
+#    FILTER(lang(?nando_en) = "en")
+#    FILTER(CONTAINS(STR(?nando), "NANDO_1"))
+# del end 260303
   }
   FILTER (?reference_nando_id = ?nando_id || !BOUND(?nando_id))
   OPTIONAL {
