@@ -15,6 +15,12 @@ Before you begin, ensure you have completed the following steps:
 
 ## 🚀 Development Workflow
 
+⚠️ **The development of this repository takes place entirely in the browser. You do not need to set up a local environment unless otherwise specified.**  
+
+* [Operation Guide](https://docs.google.com/spreadsheets/d/1Mi7VOu7Ye6K5CWXbYOl2g46yuMOJuSqoJoiT8gq5T0c/edit?gid=1450391040#gid=1450391040)  
+
+If you want to develop out of the guide scope, you need follow under rule.  
+
 ### 1. Branch Naming Convention
 Please use the following prefixes for branch names to maintain clarity:
 * `feat/` : New features or functional enhancements.
