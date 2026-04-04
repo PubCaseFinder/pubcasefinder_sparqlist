@@ -42,7 +42,7 @@ WHERE {
       #FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
       #BIND(IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
       FILTER(CONTAINS(STR(?exactMatch_disease), "mim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-      BIND(IRI(REPLACE(STR(?exactMatch_disease), "https://omim.org/entry/|http://identifiers.org/omim/", "http://identifiers.org/mim/")) AS ?disease)
+      BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease)
     }
   }
   ?as sio:SIO_000628 ?disease ;

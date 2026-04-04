@@ -26,7 +26,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX nando: <http://nanbyodata.jp/ontology/nando#>
 PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
-PREFIX mim: <http://identifiers.org/mim/>
+#PREFIX mim: <http://identifiers.org/mim/>
+PREFIX mim: <https://omim.org/entry/>
 PREFIX oa: <http://www.w3.org/ns/oa#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX sio: <http://semanticscience.org/resource/>
@@ -145,8 +146,8 @@ WHERE {
               sio:SIO_000205 ?HGNC .
         ?HGNC rdfs:label ?gene_symbol .
       }
-
-      BIND (replace(str(?mim_id), 'http://identifiers.org/mim/', '') AS ?omim_id)
+      BIND (replace(str(?mim_id), 'https://omim.org/entry/', '') AS ?omim_id)
+      #BIND (replace(str(?mim_id), 'http://identifiers.org/mim/', '') AS ?omim_id)
       
       OPTIONAL { ?ordo_id rdfs:seeAlso ?mondo FILTER(CONTAINS(STR(?ordo_id), "ORDO")) }
       BIND (replace(str(?ordo_id), 'http://www.orpha.net/ORDO/Orphanet_', 'ORPHA:') AS ?orpha_id)

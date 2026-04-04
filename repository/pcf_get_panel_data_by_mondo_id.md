@@ -24,7 +24,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
 PREFIX mondo: <http://purl.obolibrary.org/obo/>
-PREFIX mim: <http://identifiers.org/mim/>
 PREFIX oa: <http://www.w3.org/ns/oa#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX oboinowl: <http://www.geneontology.org/formats/oboInOwl#>
@@ -65,7 +64,7 @@ WHERE {
                                 skos:exactMatch ?exactMatch_disease .
 
                 FILTER(CONTAINS(STR(?exactMatch_disease), "mim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-                BIND(IRI(REPLACE(STR(?exactMatch_disease), "https://omim.org/entry/|http://identifiers.org/omim/", "http://identifiers.org/mim/")) AS ?disease)
+                BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease)
               }
             }
             ?as sio:SIO_000628 ?disease ;
