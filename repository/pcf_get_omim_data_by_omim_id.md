@@ -139,7 +139,11 @@ WHERE {
       #gene id, gene symbol
       OPTIONAL {
         ?as sio:SIO_000628 ?mim_id ;
-            sio:SIO_000628 ?gene .
+            sio:SIO_000628 ?gene ;
+        # add start 260414 GenCC에서 Definitive만 취득하기 위한 필터
+            dcterms:source ?source_uri .
+        FILTER(!CONTAINS(STR(?source_uri), "https://search.thegencc.org/submissions/"))
+        # add end 260414
         ?mim_id rdf:type ncit:C7057 .
         ?gene rdf:type ncit:C16612 ;
               dcterms:identifier ?gene_ID ;

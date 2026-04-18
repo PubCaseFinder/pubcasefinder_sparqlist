@@ -5,7 +5,7 @@
   * example: 0003847, 0018096, 0007477
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://dev-pubcasefinder.dbcls.jp/sparql
 
 ## `mondo_id_list`
 ```javascript
@@ -35,10 +35,10 @@ WHERE {
       #?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_0003847 ;
       #?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_0000001 ;
       ?mondo_sub_tier rdfs:subClassOf* mondo:MONDO_{{mondo_id_list}} ;
-                      skos:exactMatch ?exactMatch_disease .
+                      skos:exactMatch ?disease .
 
-      FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-      BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
+      FILTER(CONTAINS(STR(?disease), "omim") || CONTAINS(STR(?disease), "Orphanet"))
+      #BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
     }
   }
 

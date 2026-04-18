@@ -74,7 +74,11 @@ WHERE {
   ?nando_sub_tier dcterms:identifier ?reference_nando_id .
   ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
   FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-  BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+  # edit start 260414
+  #BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+  BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease)
+  # edit end 260414
+  
   # add start 260303
   ?nando_sub_tier rdfs:label ?nando_ja ;
                   rdfs:label ?nando_en.
