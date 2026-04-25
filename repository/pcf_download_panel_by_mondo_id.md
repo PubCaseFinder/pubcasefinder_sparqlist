@@ -64,7 +64,8 @@ WHERE {
   ?mondo_sub_tier oboinowl:id ?reference_mondo_id .
   ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
   FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-  BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+  #BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+  BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease) .
 
   OPTIONAL {
     ?mondo_sub_tier rdfs:label ?mondo_en .

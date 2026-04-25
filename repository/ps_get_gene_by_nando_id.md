@@ -59,9 +59,11 @@ WHERE {
       FILTER (lang(?disease_name_ja) = "ja")
       FILTER(lang(?disease_name) = "en")
       
+      FILTER(STR(?source) != "https://www.nanbyou.or.jp/")
         #BIND( LANG("ガイドライン") AS ?source_name).
       #BIND(IF(STR(?source) = 'http://www.gene-dt.jp/pdf/guideline_did2403_list.pdf', "指定難病の遺伝学的検査に関するガイドライン", '') AS ?source_name)
-      BIND(replace(STR(?source), "http://www.gene-dt.jp/pdf/guideline_did2403_list.pdf", "Guideline") AS ?source_name) .
+      #BIND(replace(STR(?source), "http://www.gene-dt.jp/pdf/guideline_did2403_list.pdf", "Guideline") AS ?source_name) .
+      BIND(replace(STR(?source), "https://jshg.jp/wp-content/uploads/2024/03/a02edeee573e7797da6a821a5bc48026.pdf", "Guideline") AS ?source_name) .
     }
   }
   UNION
@@ -107,7 +109,8 @@ WHERE {
              }
     # End
     BIND(IF(STR(?source) = 'http://www.orphadata.org/data/xml/en_product6.xml', 'Orphadata',
-            IF(STR(?source) = 'ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen', 'OMIM', 'GenCC')) AS ?source_name)
+            IF(STR(?source) = 'ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/mim2gene_medgen', 'OMIM', 
+               IF(STR(?source) = 'https://jshg.jp/wp-content/uploads/2024/03/a02edeee573e7797da6a821a5bc48026.pdf', 'Guideline', 'GenCC'))) AS ?source_name) .
 # Start 20250110
   }
 # End 20250110
