@@ -1,6 +1,6 @@
-# [PCF] FILTER: GET All OMIM IDs - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET All OMIM IDs - https://pubcasefinder.dbcls.jp/sparql
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `all_omim_id` 
 ```sparql

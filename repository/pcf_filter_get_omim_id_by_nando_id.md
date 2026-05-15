@@ -1,11 +1,11 @@
-# [PCF] FILTER: GET OMIM ID by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET OMIM ID by NANDO ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `nando_id` NANDO ID
   * default: 1200295 
   * examples: 1000001, 2000001, 1200003
   
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `nando_id_list`
 ```javascript
@@ -29,10 +29,12 @@ WHERE {
   VALUES ?nando_id { {{nando_id_list}} }
   ?nando_id a owl:Class .
   ?nando_sub_tier rdfs:subClassOf* ?nando_id ;
-                  skos:closeMatch ?mondo .
+                  skos:exactMatch ?mondo .
   ?mondo skos:exactMatch ?mim_uri .
   FILTER(CONTAINS(STR(?mim_uri), "mim"))
-  BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
+  # 20241224 change
+  #BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
+  BIND (replace(replace(str(?mim_uri), 'https://omim.org/entry/', ''), 'http://identifiers.org/omim/', '') AS ?omim_id)
 }
 ```
 

@@ -1,4 +1,4 @@
-# [PCF] Get ORPHA data by ORPHA ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get ORPHA data by ORPHA ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `orpha_id` ORPHA ID (複数のIDを入力可能)
   * default: 245, 52, 140952, 1784
@@ -7,7 +7,7 @@
 	* example: download
     
 ## Endpoint
-https://dev-pubcasefinder.dbcls.jp/sparql/
+https://pubcasefinder.dbcls.jp/sparql/
 
 ## `orpha_id_list`
 ```javascript
@@ -116,12 +116,16 @@ WHERE {
       OPTIONAL { ?ordo_id rdfs:seeAlso ?gtr  FILTER(CONTAINS(STR(?gtr), "gtr")) }
 
       #mondo id, disease name, description
+      # 20260319 start 주석 해제함
       #OPTIONAL { ?ordo_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
+      # 20260319 end
       OPTIONAL { ?ordo_id rdfs:seeAlso ?mondo . BIND (replace(str(?mondo), 'http://purl.obolibrary.org/obo/MONDO_', 'https://monarchinitiative.org/disease/MONDO:') AS ?mondo_url) }
       
       ?mondo rdfs:label ?disease_name_en . 
       FILTER (lang(?disease_name_en) = "")
+      # 20260319 start 주석 해제함
       OPTIONAL { ?mondo rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
+      # 20260319 end
       
       OPTIONAL { ?mondo <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_ID . }
       OPTIONAL { ?mondo obo:IAO_0000115 ?description . }
@@ -132,7 +136,7 @@ WHERE {
       #nando url
       OPTIONAL {
         GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/nando>{
-          ?nando_url skos:closeMatch ?mondo.
+          ?nando_url skos:exactMatch ?mondo.
         }
       }
       

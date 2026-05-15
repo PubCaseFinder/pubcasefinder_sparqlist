@@ -1,11 +1,11 @@
-# [PCF] FILTER: GET GENE IDs by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET GENE IDs by NANDO ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `nando_id` NANDO ID
   * default: 2100004
   * examples: 1200009, 2200865
   
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `nando_id_list`
 ```javascript
@@ -35,7 +35,7 @@ WHERE {
       ?nando a owl:Class ;
              dcterms:identifier "NANDO:{{nando_id_list}}" .
       ?nando_sub_tier rdfs:subClassOf* ?nando ;
-                      skos:closeMatch ?mondo .
+                      skos:exactMatch ?mondo .
       ?mondo skos:exactMatch ?exactMatch_disease .
       FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
       BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .

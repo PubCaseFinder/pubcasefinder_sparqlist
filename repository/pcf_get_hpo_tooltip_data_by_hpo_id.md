@@ -1,11 +1,11 @@
-# [PCF] Get HPO tooltip data by HPO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get HPO tooltip data by HPO ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `hpo_id` HPO ID
   * default: 0000347
   * example: 0410219, 0031815, 0040184
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `hpo_id_list`
 ```javascript
@@ -29,20 +29,21 @@ str(?name_ja) as ?name_ja
 str(?definition) as ?definition
 str(?comment) as ?comment
 str(?synonym) as ?synonym
-str(?hpo_url) as ?hpo_url
+str(?hp_id) as ?hpo_url
 
 WHERE { 
-    VALUES ?hp_id { obo:HP_{{hpo_id_list}} }
+  VALUES ?hp_id { obo:HP_{{hpo_id_list}} }
 
-    GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
-      optional { ?hp_id rdfs:label ?name_en . }
-      optional { ?hp_id obo:IAO_0000115 ?definition . }
-      optional { ?hp_id <http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> ?synonym . }
-      optional { ?hp_id rdfs:comment ?comment . }
-    }
-    
-    optional { ?hp_id rdfs:seeAlso ?hpo_url . }
-    optional { ?hp_id rdfs:label ?name_ja . FILTER (lang(?name_ja) = "ja") }
+  GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+    optional { ?hp_id rdfs:label ?name_en . FILTER (lang(?name_en) = "") .}
+    optional { ?hp_id obo:IAO_0000115 ?definition . }
+    optional { ?hp_id <http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> ?synonym . }
+    optional { ?hp_id rdfs:comment ?comment . }
+  }
+
+  # 20241224 del
+  #optional { ?hp_id rdfs:seeAlso ?hpo_url . }
+  optional { ?hp_id rdfs:label ?name_ja . FILTER (lang(?name_ja) = "ja") }
 
 } order by ?hpo_url ?synonym
 ```

@@ -1,6 +1,6 @@
-# [PCF] Get GPA - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get GPA - https://pubcasefinder.dbcls.jp/sparql
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `result` 
 ```sparql

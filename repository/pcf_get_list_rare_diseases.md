@@ -1,7 +1,7 @@
-# [PCF] List_Rare_Diseases - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] List_Rare_Diseases - https://pubcasefinder.dbcls.jp/sparql
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `result` 
 ```sparql

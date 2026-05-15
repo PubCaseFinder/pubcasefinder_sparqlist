@@ -1,11 +1,11 @@
-# [PCF] FILTER: GET ORPHA ID by NANDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] FILTER: GET ORPHA ID by NANDO ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `nando_id` NANDO ID
   * default: 1200295 
   * examples: 1000001, 2000001, 1200003
   
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `nando_id_list`
 ```javascript
@@ -29,7 +29,7 @@ WHERE {
   VALUES ?nando_id { {{nando_id_list}} }
   ?nando_id a owl:Class .
   ?nando_sub_tier rdfs:subClassOf* ?nando_id ;
-                  skos:closeMatch ?mondo .
+                  skos:exactMatch ?mondo .
   ?mondo skos:exactMatch ?orpha_url .
   FILTER(CONTAINS(STR(?orpha_url), "Orphanet_"))  
   BIND (replace(str(?orpha_url), 'http://www.orpha.net/ORDO/Orphanet_', '') AS ?orpha_id)

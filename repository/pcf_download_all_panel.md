@@ -1,6 +1,6 @@
-# [PCF] Get all panel - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get all panel - https://pubcasefinder.dbcls.jp/sparql
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `result` 
 ```sparql
