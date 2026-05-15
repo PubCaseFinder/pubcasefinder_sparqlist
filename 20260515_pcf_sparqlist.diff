@@ -1,0 +1,400 @@
+diff --git a/.github/ISSUE_TEMPLATE/base.md b/.github/ISSUE_TEMPLATE/base.md
+deleted file mode 100644
+index 4940806..0000000
+--- a/.github/ISSUE_TEMPLATE/base.md
++++ /dev/null
+@@ -1,7 +0,0 @@
+-## Overview
+-
+-## Related Issues
+-
+-## Verification
+-
+-## Reference
+\ No newline at end of file
+diff --git a/.github/pull_request_template.md b/.github/pull_request_template.md
+deleted file mode 100644
+index 51dad61..0000000
+--- a/.github/pull_request_template.md
++++ /dev/null
+@@ -1,7 +0,0 @@
+-## Overview
+-
+-## Related Issues
+-
+-## Verification
+-
+-## Review Point
+\ No newline at end of file
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+deleted file mode 100644
+index a1dffc0..0000000
+--- a/CONTRIBUTING.md
++++ /dev/null
+@@ -1,56 +0,0 @@
+-# CONTRIBUTING.md
+-
+-Thank you for your interest in contributing to this internal project. To maintain code quality and ensure a smooth development process, please adhere to the following guidelines.
+-
+----
+-
+-## 🛠 Prerequisites
+-
+-Before you begin, ensure you have completed the following steps:
+-1.  **Fork or Branch**: Create a new branch from `main`.
+-2.  **Environment Setup**: Follow the instructions in `README.md` to set up your local development environment.
+-3.  **Check Issues**: Verify if there is an existing Issue related to your proposed changes. For major architectural changes, please open an Issue for discussion before implementation.
+-
+----
+-
+-## 🚀 Development Workflow
+-
+-⚠️ **The development of this repository takes place entirely in the browser. You do not need to set up a local environment unless otherwise specified.**  
+-
+-* [Operation Guide](https://docs.google.com/spreadsheets/d/1Mi7VOu7Ye6K5CWXbYOl2g46yuMOJuSqoJoiT8gq5T0c/edit?gid=1450391040#gid=1450391040)  
+-
+-If you want to develop out of the guide scope, you need follow under rule.  
+-
+-### 1. Branch Naming Convention
+-Please use the following prefixes for branch names to maintain clarity:
+-* `feat/` : New features or functional enhancements.
+-* `fix/` : Bug fixes.
+-* `docs/` : Documentation updates.
+-* `refactor/` : Code changes that neither fix a bug nor add a feature.
+-
+-### 2. Coding Standards
+-* **Testing**: Ensure that your changes do not break existing functionality. Adding unit tests for new features is highly encouraged.
+-* **Documentation**: Update the internal documentation or inline comments if your changes affect the logic or API.
+-
+-### 3. Commit Messages
+-Commit messages should be concise and descriptive. 
+-
+----
+-
+-## 📮 Pull Request (PR) Procedure
+-
+-1.  **Submission**: Push your changes and create a Pull Request to the `main` branch.
+-2.  **PR Description**: Include the following details in your PR description:
+-    * **Overview**: A brief summary of the changes.
+-    * **Related Issues**: Reference any relevant Issue numbers (e.g., `Closes #123`).
+-    * **Verification**: Confirmation that the code has been tested in a local environment.
+-3.  **Review Process**: At least one approval from a maintainer is required for merging. After creating the PR, please notify the team in the designated Slack channel.
+-
+----
+-
+-## 📝 Reporting Issues
+-
+-If you encounter bugs or have suggestions for improvements:
+-* Open a new **Issue** with a clear title.
+-* Provide detailed steps to reproduce the bug.
+-* Attach logs or screenshots if applicable.
+diff --git a/README.md b/README.md
+index ea868c7..a5c0dca 100644
+--- a/README.md
++++ b/README.md
+@@ -73,53 +73,48 @@ $ docker-compose up -d
+ 
+ Check the SPARQList page can be displayed from a browser on the port number specified in the `.env` file. e.g. `http://localhost:3000`
+ 
+-## Production environment release procedure
++
++## 本番環境リリース手順
++
+ 
+ ### 1. git pull
+-First, retrieve the latest code from the repository.
++まずリポジトリから最新コードを取得
+ ```
+ git pull
+ ```
+ 
+-### 2. Check for differences between production and development environment code.
+-
+-For the production environment SPARQList code (under `repository`), output a message if there are differences between the production environment code and the development environment code.
+-If only the SPARQL endpoint URL is different, it is considered that there are no differences.
+-
++### 2. 本番環境と開発環境のコードの差異の有無チェック
++本番環境 SPARQList コード (repository以下) について、開発環境のコードと差異がある場合にメッセージを出力する。  
++SPARQL エンドポイントの URL だけが異なる場合には差異はないものとする。
+ ```
+ sh bin/diff_with_dev.sh
+ ```
+-
+-If there are differences, the following message will be displayed for each file.
++差異がある場合にはファイルごとに以下のメッセージが表示される。
+ ```
+ 開発環境のコードとEndpoint以外の差異があります. 'pcf_get_omim_data_by_omim_id.md'.
+ 次のコマンドで本番環境にコピーしてリリースできます。 sh bin/release_product_from_dev.sh pcf_get_omim_data_by_omim_id.md
+ ```
+-
+-If you want to check what the differences are, you can check the diff results with the following command.
+-
++どういった差異があるのか確認したい場合は 以下の次のコマンドで diff の結果を確認できる。  
+ `tmp/repository/***.md.diff`
+-
+ ```
+ cat tmp/repository/pcf_get_omim_data_by_omim_id.md.diff
+ ```
+-
+-If a file exists in the production environment but not in the development environment, the following message will be displayed:
++本番環境にはあるが、開発環境に存在しないファイルがあれば次のようなメッセージが表示される。
+ ```
+ 開発環境にはない md ファイルです. 'test_pubtator3.md'
+ ```
+ 
+-### 3. Release Execution with Specified MD Files  
+-Specify the MD files you wish to release. This copies the code from the development environment and releases it to the production environment.  
+-During release, the development SARQL endpoint is replaced with the production environment endpoint.  
+-Before: https://dev-pubcasefinder.dbcls.jp/sparql  
+-After: https://pubcasefinder.dbcls.jp/sparql
++### 3. md ファイルを指定してリリース実行
++リリースしたい md ファイルを指定して 開発環境のコードをコピーして本番環境にリリースできる。  
++リリースの際に、開発用 SARQL エンドポイントは 本番環境用の置換される。  
++修正前: https://dev-pubcasefinder.dbcls.jp/sparql  
++修正後: https://pubcasefinder.dbcls.jp/sparql
+ 
+ ```
+ sh bin/release_product_from_dev.sh pcf_get_omim_data_by_omim_id.md
+ ```
+-If the release succeeds, the following message will appear. Push to git as needed.  
+-You may release multiple files before performing a git commit & push.
++正常にリリースできたら以下のメッセージが表示されるので、必要に応じて git に push する。  
++複数のファイルをリリースしてから git commit&push してもいい。
+ ```
+ ファイルが置換されました。次のコマンドで gitに反映して下さい
+ git add .
+@@ -127,16 +122,14 @@ git commit -m'ここにコメントを入力'
+ git push origin main
+ ```
+ 
+-### 4. Checking for Access to the Development Environment's SPARQL Endpoint
+-Check if there are any instances in the production environment accessing the development environment's SPARQL endpoint.
++### 4. 開発環境の SPARQL エンドポイントへのアクセスの有無チェック
++本番環境で 開発環境の SPARQL エンドポイントにアクセスしているものがないかチェックする。  
+ 
+ ```
+-sh bin/check_dev_endopoint.sh
++sh bin/check_dev_endopoint.sh 
+ ```
+-
+-If there are lines containing "/sparql" and "dev", the following message will be displayed.
+-
++"/sparql" と "dev" と書かれている行があれば次のようなメッセージが表示される。
+ ```
+ 本番環境の SPARQList に開発環境用 Endpoint が書かれている可能性があります.
+ pcf_get_omim_data_by_omim_id.md, pcf_get_orpha_data_by_orpha_id.md,
+-```
++```
+\ No newline at end of file
+diff --git a/repository/pcf_filter_get_gene_id_by_nando_id.md b/repository/pcf_filter_get_gene_id_by_nando_id.md
+index 31eb8fb..01dcb5f 100644
+--- a/repository/pcf_filter_get_gene_id_by_nando_id.md
++++ b/repository/pcf_filter_get_gene_id_by_nando_id.md
+@@ -35,7 +35,7 @@ WHERE {
+       ?nando a owl:Class ;
+              dcterms:identifier "NANDO:{{nando_id_list}}" .
+       ?nando_sub_tier rdfs:subClassOf* ?nando ;
+-                      skos:closeMatch ?mondo .
++                      skos:exactMatch ?mondo .
+       ?mondo skos:exactMatch ?exactMatch_disease .
+       FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+       BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
+diff --git a/repository/pcf_filter_get_omim_id_by_mondo_id.md b/repository/pcf_filter_get_omim_id_by_mondo_id.md
+index 9b50d8b..7d6e16c 100644
+--- a/repository/pcf_filter_get_omim_id_by_mondo_id.md
++++ b/repository/pcf_filter_get_omim_id_by_mondo_id.md
+@@ -36,15 +36,9 @@ WHERE {
+   ?mondo_sub_tier rdfs:subClassOf* ?mondo_list ;
+                   skos:exactMatch ?mim_uri .
+   FILTER(CONTAINS(STR(?mim_uri), "mim"))
+-  BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
+-  
+-  #mondo 갱신으로 임시 소스
+-  #FILTER(CONTAINS(STR(?mim_uri), "entry"))
+-  #BIND (replace(str(?mim_uri), 'https://omim.org/entry/', '') AS ?omim_id)
+-  
+-  #mondo 갱신으로 인한 잠시 주석화
+-  #FILTER(CONTAINS(STR(?mim_id), "OMIM_"))
+-  #BIND (replace(str(?mim_id), 'http://purl.obolibrary.org/obo/OMIM_', '') AS ?omim_id)
++  # 20241224 change
++  #BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
++  BIND (replace(replace(str(?mim_uri), 'https://omim.org/entry/', ''), 'http://identifiers.org/omim/', '') AS ?omim_id)
+ }
+ ```
+ 
+diff --git a/repository/pcf_filter_get_omim_id_by_nando_id.md b/repository/pcf_filter_get_omim_id_by_nando_id.md
+index 3ae8cd6..9af3278 100644
+--- a/repository/pcf_filter_get_omim_id_by_nando_id.md
++++ b/repository/pcf_filter_get_omim_id_by_nando_id.md
+@@ -29,10 +29,12 @@ WHERE {
+   VALUES ?nando_id { {{nando_id_list}} }
+   ?nando_id a owl:Class .
+   ?nando_sub_tier rdfs:subClassOf* ?nando_id ;
+-                  skos:closeMatch ?mondo .
++                  skos:exactMatch ?mondo .
+   ?mondo skos:exactMatch ?mim_uri .
+   FILTER(CONTAINS(STR(?mim_uri), "mim"))
+-  BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
++  # 20241224 change
++  #BIND (replace(str(?mim_uri), 'http://identifiers.org/omim/', '') AS ?omim_id)
++  BIND (replace(replace(str(?mim_uri), 'https://omim.org/entry/', ''), 'http://identifiers.org/omim/', '') AS ?omim_id)
+ }
+ ```
+ 
+diff --git a/repository/pcf_filter_get_orpha_id_by_nando_id.md b/repository/pcf_filter_get_orpha_id_by_nando_id.md
+index 58cf5cc..7a33e5d 100644
+--- a/repository/pcf_filter_get_orpha_id_by_nando_id.md
++++ b/repository/pcf_filter_get_orpha_id_by_nando_id.md
+@@ -29,7 +29,7 @@ WHERE {
+   VALUES ?nando_id { {{nando_id_list}} }
+   ?nando_id a owl:Class .
+   ?nando_sub_tier rdfs:subClassOf* ?nando_id ;
+-                  skos:closeMatch ?mondo .
++                  skos:exactMatch ?mondo .
+   ?mondo skos:exactMatch ?orpha_url .
+   FILTER(CONTAINS(STR(?orpha_url), "Orphanet_"))  
+   BIND (replace(str(?orpha_url), 'http://www.orpha.net/ORDO/Orphanet_', '') AS ?orpha_id)
+diff --git a/repository/pcf_get_hpo_tooltip_data_by_hpo_id.md b/repository/pcf_get_hpo_tooltip_data_by_hpo_id.md
+index becb760..b869981 100644
+--- a/repository/pcf_get_hpo_tooltip_data_by_hpo_id.md
++++ b/repository/pcf_get_hpo_tooltip_data_by_hpo_id.md
+@@ -1,11 +1,11 @@
+-# [PCF] Get HPO tooltip data by HPO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
++# [PCF] Get HPO tooltip data by HPO ID - https://pubcasefinder.dbcls.jp/sparql
+ ## Parameters
+ * `hpo_id` HPO ID
+   * default: 0000347
+   * example: 0410219, 0031815, 0040184
+ 
+ ## Endpoint
+-https://pubcasefinder-rdf.dbcls.jp/sparql
++https://pubcasefinder.dbcls.jp/sparql
+ 
+ ## `hpo_id_list`
+ ```javascript
+@@ -29,20 +29,21 @@ str(?name_ja) as ?name_ja
+ str(?definition) as ?definition
+ str(?comment) as ?comment
+ str(?synonym) as ?synonym
+-str(?hpo_url) as ?hpo_url
++str(?hp_id) as ?hpo_url
+ 
+ WHERE { 
+-    VALUES ?hp_id { obo:HP_{{hpo_id_list}} }
++  VALUES ?hp_id { obo:HP_{{hpo_id_list}} }
+ 
+-    GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+-      optional { ?hp_id rdfs:label ?name_en . }
+-      optional { ?hp_id obo:IAO_0000115 ?definition . }
+-      optional { ?hp_id <http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> ?synonym . }
+-      optional { ?hp_id rdfs:comment ?comment . }
+-    }
+-    
+-    optional { ?hp_id rdfs:seeAlso ?hpo_url . }
+-    optional { ?hp_id rdfs:label ?name_ja . FILTER (lang(?name_ja) = "ja") }
++  GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
++    optional { ?hp_id rdfs:label ?name_en . FILTER (lang(?name_en) = "") .}
++    optional { ?hp_id obo:IAO_0000115 ?definition . }
++    optional { ?hp_id <http://www.geneontology.org/formats/oboInOwl#hasExactSynonym> ?synonym . }
++    optional { ?hp_id rdfs:comment ?comment . }
++  }
++
++  # 20241224 del
++  #optional { ?hp_id rdfs:seeAlso ?hpo_url . }
++  optional { ?hp_id rdfs:label ?name_ja . FILTER (lang(?name_ja) = "ja") }
+ 
+ } order by ?hpo_url ?synonym
+ ```
+diff --git a/repository/pcf_get_omim_data_by_omim_id.md b/repository/pcf_get_omim_data_by_omim_id.md
+index 1df0dcb..36e0ae4 100644
+--- a/repository/pcf_get_omim_data_by_omim_id.md
++++ b/repository/pcf_get_omim_data_by_omim_id.md
+@@ -7,7 +7,7 @@
+ 	* example: download
+ 
+ ## Endpoint
+-https://dev-pubcasefinder.dbcls.jp/sparql/
++https://pubcasefinder.dbcls.jp/sparql
+ 
+ ## `omim_id_list`
+ ```javascript
+@@ -78,20 +78,22 @@ WHERE {
+   {{else}}
+     {{#if omim_id_list}}
+       VALUES ?mim_id { {{omim_id_list}} }
+-      {
+-        SELECT DISTINCT ?mim_id count(DISTINCT ?hpo) as ?hpo WHERE {
+-          ?an rdf:type oa:Annotation ;
+-              oa:hasTarget ?mim_id ;
+-              oa:hasBody ?hpo ;
+-              dcterms:source [dcterms:creator ?creator] .
+-          FILTER(CONTAINS(STR(?mim_id), "mim"))
+-          FILTER(?creator NOT IN("Database Center for Life Science"))
+-          GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
+-            ?hpo rdfs:subClassOf+ ?hpo_category .
+-            ?hpo_category rdfs:subClassOf obo:HP_0000118 .
++      OPTIONAL { 
++        {
++          SELECT DISTINCT ?mim_id count(DISTINCT ?hpo) as ?hpo WHERE {
++            ?an rdf:type oa:Annotation ;
++                oa:hasTarget ?mim_id ;
++                oa:hasBody ?hpo ;
++                dcterms:source [dcterms:creator ?creator] .
++            FILTER(CONTAINS(STR(?mim_id), "mim"))
++            FILTER(?creator NOT IN("Database Center for Life Science"))
++            GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/hp>{
++              ?hpo rdfs:subClassOf+ ?hpo_category .
++              ?hpo_category rdfs:subClassOf obo:HP_0000118 .
++            }
+           }
+         }
+-       }
++      }
+     {{/if}}
+   {{/if}}
+       OPTIONAL { 
+@@ -130,7 +132,7 @@ WHERE {
+       #nando url
+       OPTIONAL {
+         GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/nando>{
+-          ?nando_url skos:closeMatch ?mondo.
++          ?nando_url skos:exactMatch ?mondo.
+         }
+       }
+       #gene id, gene symbol
+diff --git a/repository/pcf_get_orpha_data_by_orpha_id.md b/repository/pcf_get_orpha_data_by_orpha_id.md
+index 818b9c2..68b2cf7 100644
+--- a/repository/pcf_get_orpha_data_by_orpha_id.md
++++ b/repository/pcf_get_orpha_data_by_orpha_id.md
+@@ -132,7 +132,7 @@ WHERE {
+       #nando url
+       OPTIONAL {
+         GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/nando>{
+-          ?nando_url skos:closeMatch ?mondo.
++          ?nando_url skos:exactMatch ?mondo.
+         }
+       }
+       
+diff --git a/repository/pcf_get_panel_data_by_mondo_id.md b/repository/pcf_get_panel_data_by_mondo_id.md
+index 2ac0551..cc8b893 100644
+--- a/repository/pcf_get_panel_data_by_mondo_id.md
++++ b/repository/pcf_get_panel_data_by_mondo_id.md
+@@ -5,7 +5,7 @@
+   * example: 0009903, 0003847, 0018096, 0007477
+ 
+ ## Endpoint
+-https://pubcasefinder-rdf.dbcls.jp/sparql
++https://pubcasefinder.dbcls.jp/sparql
+ 
+ ## `mondo_id_list`
+ ```javascript
+@@ -53,7 +53,8 @@ WHERE {
+     VALUES ?mondo { {{#each mondo_id_list}} mondo:MONDO_{{this}} {{/each}} }
+       {{/if}}
+       
+-      ?mondo sio:SIO_001112 ?count .
++      OPTIONAL { ?mondo sio:SIO_001112 ?count }
++      
+       #---------- gene count start
+ #      {
+ #        SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE {

@@ -1,4 +1,4 @@
-# [PCF] Get OMIM data by OMIM ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get OMIM data by OMIM ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `omim_id` OMIM ID (複数のIDを入力可能)
   * default: OMIM:181500,OMIM:214800,OMIM:263750,OMIM:219000
@@ -26,7 +26,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX nando: <http://nanbyodata.jp/ontology/nando#>
 PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
-PREFIX mim: <http://identifiers.org/mim/>
+#PREFIX mim: <http://identifiers.org/mim/>
+PREFIX mim: <https://omim.org/entry/>
 PREFIX oa: <http://www.w3.org/ns/oa#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX sio: <http://semanticscience.org/resource/>
@@ -116,13 +117,16 @@ WHERE {
       OPTIONAL { ?mim_id rdfs:seeAlso ?gtr  FILTER(CONTAINS(STR(?gtr), "gtr")) }
 
       #mondo id, disease name, description
-      #OPTIONAL { ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
+      # 20260319 start 주석 해제함
+      #OPTIONAL { ?mim_id rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }#
+      # 20260319 end
       OPTIONAL { ?mim_id rdfs:seeAlso ?mondo . BIND (replace(str(?mondo), 'http://purl.obolibrary.org/obo/MONDO_', 'https://monarchinitiative.org/disease/MONDO:') AS ?mondo_url) }
       
       ?mondo rdfs:label ?disease_name_en .
       FILTER (lang(?disease_name_en) = "")
+      # 20260319 start 주석 처리함
       OPTIONAL { ?mondo rdfs:label ?disease_name_ja FILTER (lang(?disease_name_ja) = "ja") }
-      
+      # 20260319 end
       OPTIONAL { ?mondo <http://www.geneontology.org/formats/oboInOwl#id> ?mondo_ID . }
       OPTIONAL { ?mondo obo:IAO_0000115 ?description . }
       
@@ -146,7 +150,7 @@ WHERE {
         ?HGNC rdfs:label ?gene_symbol .
       }
 
-      BIND (replace(str(?mim_id), 'http://identifiers.org/mim/', '') AS ?omim_id)
+      BIND (replace(str(?mim_id), 'https://omim.org/entry/', '') AS ?omim_id)
       
       OPTIONAL { ?ordo_id rdfs:seeAlso ?mondo FILTER(CONTAINS(STR(?ordo_id), "ORDO")) }
       BIND (replace(str(?ordo_id), 'http://www.orpha.net/ORDO/Orphanet_', 'ORPHA:') AS ?orpha_id)

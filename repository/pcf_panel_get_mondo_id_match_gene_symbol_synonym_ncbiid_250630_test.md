@@ -37,16 +37,16 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX bif: <bif:>
 
 #SELECT DISTINCT ?ncbi_gene_id ?mondo_id WHERE {
-SELECT DISTINCT ?mondo_id WHERE {
+SELECT DISTINCT ?mondo_id ?name_en ?name_ja WHERE {
   {
     SELECT DISTINCT ?mondo_url WHERE {
       VALUES ?text { "{{text_list}}" }
-      
+
       ?as sio:SIO_000628 ?disease ;
           sio:SIO_000628 ?gene .
 
-      ?gene rdf:type ncit:C16612 .
       ?disease rdf:type ncit:C7057 .
+      ?gene rdf:type ncit:C16612 .
 
       ?gene <http://ddbj.nig.ac.jp/ontologies/nucleotide/gene_synonym> ?gene_synonym ;
             dcterms:identifier ?ncbi_gene_id ;
@@ -54,21 +54,42 @@ SELECT DISTINCT ?mondo_id WHERE {
 
       ?disease rdfs:seeAlso ?mondo_url .
       ?mondo_url rdf:type owl:Class .
-      
-      FILTER (REGEX(?symbol, ?text, "i") || REGEX(?ncbi_gene_id, ?text, "i") || REGEX(?gene_synonym, ?text, "i")) .
+      FILTER (
+        IF(
+          REGEX(?text, "^[0-9]+$"),
+          REGEX(?ncbi_gene_id, CONCAT("^", ?text, "$")),
+          (REGEX(?symbol, ?text, "i") || REGEX(?gene_synonym, ?text, "i"))
+        )
+      )
     }
   }
-  
+
   GRAPH <https://pubcasefinder.dbcls.jp/rdf/ontology/mondo>{
     ?mondo_url rdfs:subClassOf* ?mondo_sup_tier .
     FILTER(CONTAINS(STR(?mondo_sup_tier), "MONDO"))
-    ?mondo_sup_tier oboinowl:id ?mondo_id
+    ?mondo_sup_tier oboinowl:id ?mondo_id .
+    ?mondo_sup_tier rdfs:label ?name_en .
+    FILTER (lang(?name_en) = "")
+    OPTIONAL { ?mondo_sup_tier rdfs:label ?name_ja FILTER (lang(?name_ja) = "ja") }
   }
-}
+} ORDER BY ?mondo_id
 ```
 
 ## Output
 ```javascript
+({result})=>{ 
+  return result.results.bindings.map(data => {
+    return Object.keys(data).reduce((obj, key) => {
+      obj[key] = data[key].value;
+      return obj;
+    }, {});
+  });
+}
+
+```
+
+`javascript
+
 ({text_list, result})=>{ 
   var list = []
   var dic = {}
@@ -82,51 +103,5 @@ SELECT DISTINCT ?mondo_id WHERE {
   }
   
   return dic
-}
-```
-`javascript
-({text_list, result})=>{ 
-  var list = []
-  var dic = {}
-  var rows = result.results.bindings;
-  var count = 1
-
-  if(text_list.length > 1)
-  {
-    for (let i = 0; i < rows.length; i++) {
-      count = 1
-      for (let j = i + 1; j < rows.length; j++) {
-        if(rows[i].mondo_id.value == rows[j].mondo_id.value)
-          ++count
-        
-        console.log(count + " " + text_list.length);
-        
-        if(text_list.length == count)
-          list.push(rows[i].mondo_id.value);
-      }
-    }
-  }
-  else
-  {
-    for (let i = 0; i < rows.length; i++)
-      list.push(rows[i].mondo_id.value);
-  }
-
-  if(rows){
-    //dic['MONDO:' + text_list] = list;
-    dic['input:' + text_list] = Array.from(new Set(list))
-  }
-  return dic
-}
-```
-
-`javascript
-({result})=>{ 
-  return result.results.bindings.map(data => {
-    return Object.keys(data).reduce((obj, key) => {
-      obj[key] = data[key].value;
-      return obj;
-    }, {});
-  });
 }
 ```

@@ -1,4 +1,4 @@
-# [PCF] Get Panel data by MONDO ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get Panel data by MONDO ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `mondo_id` MONDO ID
   * default: 0013127
@@ -24,7 +24,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
 PREFIX mondo: <http://purl.obolibrary.org/obo/>
-PREFIX mim: <http://identifiers.org/mim/>
 PREFIX oa: <http://www.w3.org/ns/oa#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX oboinowl: <http://www.geneontology.org/formats/oboInOwl#>
@@ -53,27 +52,26 @@ WHERE {
     VALUES ?mondo { {{#each mondo_id_list}} mondo:MONDO_{{this}} {{/each}} }
       {{/if}}
       
-      OPTIONAL { ?mondo sio:SIO_001112 ?count }
+      #OPTIONAL { ?mondo sio:SIO_001112 ?count }
       
       #---------- gene count start
-#      {
-#        SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE {
-#          {
-#            SELECT DISTINCT ?mondo ?disease WHERE { 
-#              ?mondo_sub_tier rdfs:subClassOf* ?mondo ;
-#                              skos:exactMatch ?exactMatch_disease .
-#
-#              FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-#              BIND (IRI(replace(STR(?exactMatch_disease), 'http://identifiers.org/omim/', 'http://identifiers.org/mim/')) AS ?disease) .
-#            }
-#          }
-#          ?as sio:SIO_000628 ?disease ;
-#              sio:SIO_000628 ?gene .
-#          ?disease rdf:type ncit:C7057 .
-#          ?gene rdf:type ncit:C16612 ;
-#                dcterms:identifier ?gene_id . 
-#        }
-#      }
+      OPTIONAL{
+        SELECT ?mondo COUNT(DISTINCT ?gene) as ?count WHERE {
+          {
+            SELECT DISTINCT ?mondo ?disease WHERE { 
+              ?mondo_sub_tier rdfs:subClassOf* ?mondo ;
+                              skos:exactMatch ?exactMatch_disease .
+
+              FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+              BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease)
+            }
+          }
+          ?as sio:SIO_000628 ?disease ;
+              sio:SIO_000628 ?gene .
+          ?disease rdf:type ncit:C7057 .
+          ?gene rdf:type ncit:C16612 .
+       }
+      }
       #---------- gene count end
       
       ?mondo rdfs:label ?name_en .

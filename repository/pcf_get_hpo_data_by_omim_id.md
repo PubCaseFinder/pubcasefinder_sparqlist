@@ -1,11 +1,11 @@
-# [PCF] Get HPO data by OMIM ID - https://pubcasefinder-rdf.dbcls.jp/sparql
+# [PCF] Get HPO data by OMIM ID - https://pubcasefinder.dbcls.jp/sparql
 ## Parameters
 * `omim_id` OMIM ID
   * default: 607341
   * example: 263750, 612158, 154400, 214800, 105650
 
 ## Endpoint
-https://pubcasefinder-rdf.dbcls.jp/sparql
+https://pubcasefinder.dbcls.jp/sparql
 
 ## `omim_id_list`
 ```javascript
@@ -20,7 +20,8 @@ https://pubcasefinder-rdf.dbcls.jp/sparql
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX mim: <http://identifiers.org/mim/>
+#PREFIX mim: <http://identifiers.org/mim/>
+PREFIX mim: <https://omim.org/entry/>
 PREFIX oa: <http://www.w3.org/ns/oa#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 
