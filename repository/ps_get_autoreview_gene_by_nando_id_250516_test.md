@@ -73,7 +73,8 @@ WHERE {
   }
   ?nando_sub_tier dcterms:identifier ?reference_nando_id .
   ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
-  FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+  #FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+  FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
   # edit start 260414
   #BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
   BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease)
@@ -100,7 +101,9 @@ WHERE {
 #    FILTER(CONTAINS(STR(?nando), "NANDO_1"))
 # del end 260303
   }
-  FILTER (?reference_nando_id = ?nando_id || !BOUND(?nando_id))
+# del start 260515
+#  FILTER (?reference_nando_id = ?nando_id || !BOUND(?nando_id))
+# del end 260515
   OPTIONAL {
     ?mondo_sub_tier rdfs:label ?mondo_en .
     FILTER (lang(?mondo_en) = "") . 
