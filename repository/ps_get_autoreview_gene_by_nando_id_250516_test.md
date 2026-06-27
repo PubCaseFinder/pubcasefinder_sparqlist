@@ -39,117 +39,132 @@ SELECT DISTINCT
 ?nando_ja ?nando_en ?nando_id
 ?mondo_ja
 ?mondo_en
-?mondo_sub_tier AS ?mondo_url
+?mondo_url
 ?moi_ja
 ?moi_en
 ?nando_sub_tier
 ?reference_nando_id
 WHERE { 
   {
-    SELECT DISTINCT ?nando_sub_tier ?mondo_sub_tier WHERE {
-      VALUES ?nando_input { nando:{{nando_id_list}} }
+    SELECT DISTINCT
+    ?ncbi_gene_id
+    ?hgnc_gene_symbol
+    ?rating
+    ?source
+    ?source_url
+    ?nando_ja ?nando_en ?nando_id
+    ?mondo_ja
+    ?mondo_en
+    ?mondo_sub_tier AS ?mondo_url
+    ?nando_sub_tier
+    ?reference_nando_id
+    WHERE { 
       {
-        # 하위 tier들의 MONDO
-        ?nando_sub_tier rdfs:subClassOf* ?nando_input .
-        FILTER (?nando_sub_tier != ?nando_input)
-        ?nando_sub_tier skos:exactMatch ?mondo_exactMatch .
-        ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
-      }
-      UNION
-      {
-        # 상위 tier만 가지는 고유한 MONDO
-        ?nando_input skos:exactMatch ?mondo_exactMatch .
-        ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
+        SELECT DISTINCT ?nando_sub_tier ?mondo_sub_tier WHERE {
+          VALUES ?nando_input { nando:{{nando_id_list}} }
+          {
+            # 하위 tier들의 MONDO
+            ?nando_sub_tier rdfs:subClassOf* ?nando_input .
+            FILTER (?nando_sub_tier != ?nando_input)
+            ?nando_sub_tier skos:exactMatch ?mondo_exactMatch .
+            ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
+          }
+          UNION
+          {
+            # 상위 tier만 가지는 고유한 MONDO
+            ?nando_input skos:exactMatch ?mondo_exactMatch .
+            ?mondo_sub_tier rdfs:subClassOf* ?mondo_exactMatch .
 
-        FILTER NOT EXISTS {
-          ?other_nando rdfs:subClassOf* ?nando_input .
-          FILTER (?other_nando != ?nando_input)
-          ?other_nando skos:exactMatch ?other_match .
-          ?mondo_sub_tier rdfs:subClassOf* ?other_match .
+            FILTER NOT EXISTS {
+              ?other_nando rdfs:subClassOf* ?nando_input .
+              FILTER (?other_nando != ?nando_input)
+              ?other_nando skos:exactMatch ?other_match .
+              ?mondo_sub_tier rdfs:subClassOf* ?other_match .
+            }
+            BIND(?nando_input AS ?nando_sub_tier)
+          }
         }
-        BIND(?nando_input AS ?nando_sub_tier)
       }
+      ?nando_sub_tier dcterms:identifier ?reference_nando_id .
+      ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
+      FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
+      # edit start 260414
+      #BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
+      BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease)
+      # edit end 260414
+
+      # add start 260303
+      ?nando_sub_tier rdfs:label ?nando_ja ;
+                      rdfs:label ?nando_en.
+      FILTER(lang(?nando_ja) = "ja")
+      FILTER(lang(?nando_en) = "en")
+      FILTER(CONTAINS(STR(?nando_sub_tier), "NANDO_1"))
+      # add end 260303
+
+      OPTIONAL 
+      {
+        ?nando skos:exactMatch ?mondo_sub_tier ;
+               dcterms:identifier ?nando_id .
+        # del start 260303
+        #           rdfs:label ?nando_ja ;
+        #           rdfs:label ?nando_en.
+        #    
+        #    FILTER(lang(?nando_ja) = "ja")
+        #    FILTER(lang(?nando_en) = "en")
+        #    FILTER(CONTAINS(STR(?nando), "NANDO_1"))
+        # del end 260303
+      }
+      # del start 260515
+      #  FILTER (?reference_nando_id = ?nando_id || !BOUND(?nando_id))
+      # del end 260515
+      OPTIONAL {
+        ?mondo_sub_tier rdfs:label ?mondo_en .
+        FILTER (lang(?mondo_en) = "") . 
+      }
+      OPTIONAL {
+        ?mondo_sub_tier rdfs:label ?mondo_ja .
+        FILTER (lang(?mondo_ja) = "ja") .
+      }
+      #association
+      #?as sio:SIO_000628 ?exactMatch_disease ;
+      ?as sio:SIO_000628 ?disease ;
+          sio:SIO_000628 ?gene ;
+          dcterms:source ?source_uri .
+      FILTER (?source_uri != <https://search.thegencc.org/download/action/submissions-export-csv>)
+
+      #?exactMatch_disease rdf:type ncit:C7057 . omim이 완벽하지 못하여 생기는 문제
+      #gene info
+      ?gene rdf:type ncit:C16612 ;
+            dcterms:identifier ?ncbi_gene_id ;
+            sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
+
+      OPTIONAL {
+        #GenCC source
+        ?source_uri obo:IAO_0000114 ?gencc_rating ;
+                    #            :hasInheritance ?moi ;
+                    dcterms:creator ?submitter .
+        #mode of inheritance
+        #?moi rdfs:label ?moi_en ;
+        #     rdfs:label ?moi_ja .
+        #FILTER (lang(?moi_en) = "") .
+        #FILTER (lang(?moi_ja) = "ja") .
+      }
+      BIND(IF(CONTAINS(STR(?source_uri), "orphadata"), ?exactMatch_disease,
+              IF(CONTAINS(STR(?source_uri), "mim2gene_medgen"), ?exactMatch_disease, ?source_uri)) AS ?source_url)
+
+      BIND(IF(CONTAINS(STR(?source_uri), "orphadata"), "Orphadata",
+              IF(CONTAINS(STR(?source_uri), "mim2gene_medgen"), "OMIM", CONCAT(?submitter, " (GenCC)"))) AS ?source)
+
+      BIND(IF(CONTAINS(STR(?source_uri), "orphadata") || CONTAINS(STR(?source_uri), "mim2gene_medgen"),
+              "Supportive", ?gencc_rating) AS ?rating)
     }
   }
-  ?nando_sub_tier dcterms:identifier ?reference_nando_id .
-  ?mondo_sub_tier skos:exactMatch ?exactMatch_disease .
-  #FILTER(CONTAINS(STR(?exactMatch_disease), "/omim.org/entry/") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-  FILTER(CONTAINS(STR(?exactMatch_disease), "omim") || CONTAINS(STR(?exactMatch_disease), "Orphanet"))
-  # edit start 260414
-  #BIND(IRI(replace(STR(?exactMatch_disease), 'https://omim.org/entry/', 'http://identifiers.org/mim/')) AS ?disease) .
-  BIND(IRI(REPLACE(STR(?exactMatch_disease), "http://identifiers.org/mim/|http://identifiers.org/omim/", "https://omim.org/entry/")) AS ?disease)
-  # edit end 260414
-  
-  # add start 260303
-  ?nando_sub_tier rdfs:label ?nando_ja ;
-                  rdfs:label ?nando_en.
-  FILTER(lang(?nando_ja) = "ja")
-  FILTER(lang(?nando_en) = "en")
-  FILTER(CONTAINS(STR(?nando_sub_tier), "NANDO_1"))
-  # add end 260303
-  
-  OPTIONAL 
-  {
-    ?nando skos:exactMatch ?mondo_sub_tier ;
-           dcterms:identifier ?nando_id .
-# del start 260303
-#           rdfs:label ?nando_ja ;
-#           rdfs:label ?nando_en.
-#    
-#    FILTER(lang(?nando_ja) = "ja")
-#    FILTER(lang(?nando_en) = "en")
-#    FILTER(CONTAINS(STR(?nando), "NANDO_1"))
-# del end 260303
-  }
-# del start 260515
-#  FILTER (?reference_nando_id = ?nando_id || !BOUND(?nando_id))
-# del end 260515
-  OPTIONAL {
-    ?mondo_sub_tier rdfs:label ?mondo_en .
-    FILTER (lang(?mondo_en) = "") . 
-  }
-  OPTIONAL {
-    ?mondo_sub_tier rdfs:label ?mondo_ja .
-    FILTER (lang(?mondo_ja) = "ja") .
-  }
-  #association
-  #?as sio:SIO_000628 ?exactMatch_disease ;
-  ?as sio:SIO_000628 ?disease ;
-      sio:SIO_000628 ?gene ;
-      dcterms:source ?source_uri .
-  FILTER (?source_uri != <https://search.thegencc.org/download/action/submissions-export-csv>)
-  
   #mode of inheritance
   OPTIONAL {
-    ?disease :hasInheritance ?inheritance .
+    ?source_url :hasInheritance ?inheritance .
     ?inheritance rdfs:label ?moi_en, ?moi_ja .
     FILTER (lang(?moi_en) = "" && lang(?moi_ja) = "ja") .
   }
-  #?exactMatch_disease rdf:type ncit:C7057 . omim이 완벽하지 못하여 생기는 문제
-  #gene info
-  ?gene rdf:type ncit:C16612 ;
-        dcterms:identifier ?ncbi_gene_id ;
-        sio:SIO_000205 [rdfs:label ?hgnc_gene_symbol] .
-  
-  OPTIONAL {
-    #GenCC source
-    ?source_uri obo:IAO_0000114 ?gencc_rating ;
-    #            :hasInheritance ?moi ;
-                dcterms:creator ?submitter .
-    #mode of inheritance
-    #?moi rdfs:label ?moi_en ;
-    #     rdfs:label ?moi_ja .
-    #FILTER (lang(?moi_en) = "") .
-    #FILTER (lang(?moi_ja) = "ja") .
-  }
-  BIND(IF(CONTAINS(STR(?source_uri), "orphadata"), ?exactMatch_disease,
-          IF(CONTAINS(STR(?source_uri), "mim2gene_medgen"), ?exactMatch_disease, ?source_uri)) AS ?source_url)
-
-  BIND(IF(CONTAINS(STR(?source_uri), "orphadata"), "Orphadata",
-          IF(CONTAINS(STR(?source_uri), "mim2gene_medgen"), "OMIM", CONCAT(?submitter, " (GenCC)"))) AS ?source)
-
-  BIND(IF(CONTAINS(STR(?source_uri), "orphadata") || CONTAINS(STR(?source_uri), "mim2gene_medgen"),
-          "Supportive", ?gencc_rating) AS ?rating)
 }
 order by ?hgnc_gene_symbol
 ```
